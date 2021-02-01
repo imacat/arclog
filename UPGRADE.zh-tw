@@ -1,0 +1,39 @@
+昇級指南
+
+　　若妳由 2.1.1dev4 或之前的版本昇級，請閱讀以下說明：
+
+◎檔名由 arclog.pl 改為 arclog
+
+　　這很明顯吧。 :p 若妳有寫程式，或設定 cron 排程來執行 arclog ，請記得更改檔
+名。不過妳也可以把 arclog 改名回原來的 arclog.pl ，不會有任何問題。
+
+　　改名原因如下：專案名稱含「.」會處處碰壁。 SourceForget 就不接受含「.」的專
+案名稱。此外，程式名稱 arclog 在 UNIX 下就可以跑了。副檔名 .pl 雖然在
+MS-Windows 下方便，但反正 MS-Windows 下也不會直接點兩下依副檔名執行。而且還有
+pl2bat 可以把 arclog 轉成 arclog.bat ，這樣反而比較合理。唯一不便的是我用的編
+輯器 UltraEdit 依副檔名決定程式語言語法標示，不過這也沒什麼大不了，手動設程式
+語言就好了。
+
+
+◎預設安裝目錄為 /usr/bin
+
+　　說明檔則在 /usr/share/man/man1/arclog.1 。這是為符合 Perl 的標準安裝流程，
+敝免破壞 ExtUtils::MakeMaker 的預設設定，造成日後昇級的問題。
+
+　　執行 perl Makefile.PL 或 perl Build.PL 時，會提示妳所在系統上發現的的舊檔
+案。請自行刪除。若妳程式存在其它地方，請記得要自己刪掉。
+
+　　若妳有寫程式，或設定 cron 排程來執行 arclog ，請記得更改檔名。不過妳也可以
+把 arclog 存到原來的目錄去，不會有任何問題。
+
+
+◎ --keep 和 --override 選項現在一定要加模式參數
+
+　　以前可以直接用 --keep 和 --override 選項，不加參數，現在一定要加參數，以避
+免混淆選項的參數和要處理的記錄檔名。
+
+
+依瑪貓
+2007-11-26
+imacat@mail.imacat.idv.tw
+http://www.imacat.idv.tw/

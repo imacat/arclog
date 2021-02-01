@@ -1,0 +1,785 @@
+arclog change log
+
+2008-11-18
+	 1. INSTALL and arclog.en.html: Fixed the grammer on
+	    installation with the CPAN or CPANPLUS shell, changed
+	    "install with the CPAN shell using" and "install with the
+	    CPANPLUS shell using" to "install it with the CPAN shell
+	    by running" and "install it with the CPANPLUS shell by
+	    running".
+	 2. INSTALL* and ahping.*.html: Changed "Fedora/Red Hat" to
+	    "Red Hat/Fedora/CentOS".
+	 3. INSTALL.zh-tw and INSTALL.zh-cn: Added the missing
+	    Date::Parse to the required modules section.
+
+2008-11-17
+	 1. INSTALL and arclog.en.html: Fixed the grammer on required
+	    and optional module installation, changed "install using"
+	    and "install this using" to "install it by running".
+
+2008-11-15
+	 1. arclog.*.html: Clean-up some blank lines.
+	 2. arclog.en.html: Removed the message about CPAN source
+	    in required modules.  It is stated in the module
+	    description in detail now.
+	 3. arclog.*.html: Fixed so that installation from source and
+	    with shells are joint into one sentense.
+
+2008-11-12
+	 1. INSTALL, arclog.en.html: Updated "don't" and "won't" to
+	    "do not" and "will not".
+	 2. INSTALL, arclog.en.html: Updated "ActivePerl MS-Windows
+	    users" to "ActivePerl users".  ActivePerl use ppm
+	    on all platforms, not limiting to MS-Windows.
+	 3. INSTALL: Updated "ActivePerl MS-Windows
+	    users" to "ActivePerl users".  ActivePerl use ppm
+	    on all platforms, not limiting to MS-Windows.
+	 4. INSTALL*, arclog.*.html: Added the command lines to
+	    install modules with the CPANPLUS shell.
+
+2008-11-11
+	 1. INSTALL*, arclog.*.html: Updated information on
+	    optional Perl modules, to describe different installation
+	    commands for different operating systems.
+	 2. arclog: Fixed the _private::ProgressBar class so
+	    that it does not use() Term::ReadKey, but require() it
+	    at object initialization.  This enables it to work
+	    when Term::ReadKey is missing.
+	 3. arclog: Fixed the update() method of the
+	    _private::ProgressBar class, to accept a dynamic label.
+
+2008-09-30
+	 1. arclog: Update the update() method of the the
+	    _private::ProgressBar class too use the bracket
+	    characters instead of the pipe character for a better
+	    visual outlook.
+
+2008-09-29
+	 1. arclog: Use the _private::ProgressBar class in replace of
+	    the show_progress() function to display the progress bar.
+	    This makes the progress bar easier and more pretty.
+
+2008-04-21
+	 1. INSTALL and arclog.en.html: Fixed typo: "instalation" to
+	    "installation".
+
+2007-12-05
+	 1. arclog: Initialize the static variables within BEGIN {...}
+	    blocks for all _private::* classes.
+	 2. NEWS: Added.  The NEWS file is quite useful in addition to
+	    the Changes change log.
+	 3. arclog.*.html: Added GPLv3 license update to the 3.00
+	    release notes.
+	 4. arclog.*.html: Refer to NEWS instead of Changes for release
+	    notes.
+
+2007-12-04
+	 1. Makefile.PL: Fixed to prevent importing symbols when
+	    checking optional prerequisites.
+	 2. arclog: Fixed the check_type() method of the
+	    _private::LogFile class, so that empty files are checked
+	    with the file name suffix, too.  This solve the issue
+	    that Compress::Bzip2 2 creates empty files which confuse
+	    further processing on file name suffix stripping.
+	 3. arclog: Removed unused $GZIP_IO and $BZIP2_IO from the
+	    _private::LogFile class.
+
+2007-12-03
+	 1. arclog.zh-tw.html, arclog.zh-cn.html: "不需要安裝新版" was
+	    revised to "不需要昇級新版".
+	 2. Build.PL: Fixed the comment.  This file is "Build.PL",
+	    not "Makefile.PL".
+	 3. Build.PL: Added "use warnings;".
+
+2007-12-03	version 3.04
+	Documentation fix.
+	 1. arclog, arclog.*.html, README*: Added the information on
+	    the usability of arclog with log files from many
+	    softwares that log with an Apache-like log format.
+	 2. arclog.zh-cn.html: Fixed the version number.
+	 3. arclog.*.html: Added <dfn>...</dfn> to the description.
+
+2007-12-03	version 3.03
+	 1. t/*.t: Fixed so that send frread($fs) instead of $cs
+	    is sent to arclog STDIN when reading from STDIN, so that
+	    compresed content is sent to arclog but not the original
+	    content.
+	 2. arclog.zh-tw.html, arclog.zh-cn.html: Revised the Chinese
+	    text on "3-argument open()" so that it is more readable.
+	 3. t/_helper.pm: Updated the way we generate the time with
+	    time zones in the mkrndlog_apache() and
+	    mkrndlog_modfiso() subroutines, using "gmtime($t + $tz)",
+	    so that we can obtain a reliable time text with time zone
+	    without using time2str() from Date::Format
+	 4. t/04-errors.t: Added a test on "a same log file is
+	    specified more than once".
+
+2007-12-02
+	 1. t/02-several.t, t/03-fallback.t, t/04-errors.t: Use
+	    "do { ... } until !... " instead of "do { ... } while ..."
+	    so that the code is more readable.
+	 2. t/02-several.t, t/03-fallback.t, t/04-errors.t: Initialize
+	    @cs and @cem before using them.
+
+2007-12-01
+	 1. arclog: Use "use 5.008" instead of "use 5.8.0", for
+	    compatibility with older Perl, and get ride of the warning
+	    of Perl 5.10.
+
+2007-11-30
+	 1. t/_helper.pm: Updated the version number to 0.02.
+	 2. arclog, arclog.*.html: Added NTP in addition to Syslog
+	    to the note with log file formats without years.
+	 3. arclog.zh-tw.html, arclog.zh-cn.html: Fixed the text
+	    on the note with log file formats without years.
+	 4. t/_helper.pm: Reorder the subroutines.
+	 5. t/_helper.pm: Reset the %WHEREIS hash in the beginning.
+	 6. t/01-exhaust.t: Fixed to set %cof to "" instead of 1
+	    when not creating existing files.
+	 7. t/_helper.pm: Removed unused "ce" from @KEEPTYPES.
+
+2007-11-30	version 3.02
+	 1. t/_helper.pm: Use time2str() from Date::Format to
+	    generate the time text instead of doing this my self.
+	    The way I generate the time text cannot deal with
+	    daylight saving time.  It should be safe to use
+	    Date::Format, since Date::Format is in the same TimeDate
+	    distribution as Date::Parse, at least till now.
+	 2. t/_helper.pm: Increased time zone range from -1200 to
+	    +1400 in the mkrandlog_apache() and mkrandlog_modfiso()
+	    subroutines.
+
+2007-11-29
+	 1. arclog.zh-tw.html, TODO.zh-tw, TODO.zh-cn: Changed
+	    '繁體中文' to '正體中文'.
+
+2007-11-28	version 3.01
+	Test suite improvement.
+	 1. arclog, TODO.*: Clean up to-do list.
+	 2. Makefile.PL: Use "use 5.008" instead of "use 5.8.0" for
+	    compatibility with older Perl.
+	 3. t/01-exhaust.t: Added $vardump to error output, to catch
+	    CPAN testers test failurs.
+	 4. Return to build distribution with ExtUtils::MakeMaker,
+	    since Module::Build did not preserve the original file
+	    date.
+
+2007-11-28	version 3.00
+	 1. t/01-exhaust.t: Fixed so that a zero-sized result file
+	    is valid as application/x-bzip2.  This is to fix the
+	    issue that Compress::Bzip2 does not write anything if
+	    no data is sent to the compression handler.
+
+2007-11-27
+	 1. Makefile.PL, Build.PL: Clean-up old file found message.
+	 2. Makefile.PL: Added message for optional prerequisites.
+	 3. arclog.zh-tw.html, arclog.zh-cn.html: Tag the languages.
+	 4. t/02-several.t: Added the missing "several source files
+	    all listed as arguments" tests.
+	 5. t/01-exhaust.t: Moved @OVERTYPES to t/_helper.t.
+	 6. t/02-several.t: Use random log format instead of Apache
+	    access log.
+	 7. t/03-fallback.t: Added, to test the fall back behavior.
+
+2007-11-26
+	 1. t/03-errors.t: Renamed to t/04-errors.t.
+	 2. t/01-exhaust.t: Moved @KEEPTYPES to t/_helper.t.
+	 3. t/04-errors.t: Fixed to set $num with rand().
+	 4. t/_helper.pm, t/*.t: Updated the license to GPLv3.
+	 5. arclog.*.html: Added stylesheets and access guide.
+	 6. README, README.zh-tw, README.zh-cn: Updated.
+	 7. fdl.txt: Added.
+	 8. MSWin32 and MS-Win32 is now written as MS-Windows in the
+	    documentation.
+	 9. arclog: Reorder the debug message in the check_gzip() and
+	    check_bzip2() methods of the _private::IO class.
+	10. Makefile.PL, Build.PL: Fixed comment typo. ("any old files")
+	11. Build.PL: Added "recommends" and "build_requires".
+
+2007-11-25
+	 1. t/03-errors.t: Fixed while loop to do...while loop when
+	    obtaining output prefix, so that we obtain a random word first.
+	 2. t/03-errors.t: Renamed $output to $opref.  Added $oprefb as
+	    the base name of the output prefix.
+	 3. t/_helper.t: Fixed the errors in the mkrndlog_apache() and
+	    mkrndlog_modfiso() subroutines that dump $tzoff as $zoff.
+	 4. t/_helper.t: Fixed the time zone representation that mistakenly
+	    output -0030 as +0030 in the mkrndlog_apache() and
+	    mkrndlog_modfiso() subroutines.  This test suite bug is hard to
+	    track, since it only appears with log formats with time zones,
+	    in the time zone -0300 and log records in that one-hour
+	    boundary.  This chance is too small.  I saw one or two every
+	    now and then, and am pretty sure there is a bug, but spent
+	    numerous time testing in vain.  I finally got this bug.  Yes!
+	 5. t/_helper.t: Fixed the $tzoff calculation from
+	    timegm(@_[0...5]) - timelocal(@_[0...5]) to
+	    timelocal(localtime) - timelocal(gmtime) in the
+	    mkrndlog_apache() and mkrndlog_modfiso() subroutines.
+	 6. t/_helper.t: Set time to 00:00:00 in the monrng_rand()
+	    subroutine.
+	 7. t/02-several.t: Added, to test archiving several log files
+	    at once.
+	 8. arclog, arclog.en.html, INSTALL: Fixed the typo "archieve"
+	    as "archive".
+	 9. t/01-exhaust.t: Moved @SRCTYPES to t/_helper.pm so that it can
+	    be shared among tests.
+	10. arclog: Fixed to return ref($GZIP_IO)->new instead of $GZIP_IO
+	    in the check_gzip() method, ref($BZIP2_IO)->new instead of
+	    $BZIP2_IO in the check_bzip2() method of the _private::IO class,
+	    so that a same I/O handler will not be returned to different log
+	    files.
+
+2007-11-24
+	 1. arclog: Moved output prefix "-" check to the front in
+	    the parse_args() subroutine.
+	 2. arclog: Fixed the new() method of the _private::LogFile::STDIN
+	    class to unlink0() after checking the file type with the file
+	    executable.
+	 3. t/_helper.pm: Fixed the mkrndlog_existing() subroutine to
+	    obtain the content with anonymous array index but not @_.
+	 4. t/_helper.pm: Fixed the mkrndlog_*() subroutines to
+	    return @logs and time zone variable dumps for easier debugging.
+	 5. t/*.t: Added a debug file to save dumped variables for easier
+	    debugging.
+	 6. t/02-errors.t: Renamed to t/03-errors.t.
+	 7. t/*.t: Renamed the debug file "debug" to "$logfile.debug", so
+	    that each log file can have its own variable dump.
+	 8. t/03-errors.t: Added "$logfile.debug" to mixing formats tests.
+	 9. t/_helper.pm, t/*.t: Renaming $debug to $vardump, and
+	    "$logfile.debug" to "$logfile.vardump".
+
+2007-11-23
+	 1. t/02-errors.t: Added tests on mixing log formats and STDOUT
+	    output prefix.
+	 2. t/01-exhaust.t: Moved @LOGFMTS to t/_helper.pm so that it
+	    can be shared among tests.
+
+2007-11-22
+	 1. arclog: Fixed $SIG{__WARN__} to $SIG{"__WARN__"} in the
+	    parse_args() subroutine.
+	 2. t/01-exhaust.t: Fixed to loop the override mode in the keep
+	    mode.
+	 2. t/01-exhaust.t: Removed unused $ce and %fm.
+	 3. t/01-exhaust.t: Added the override mode "default".
+	 4. t/02-errors.t: Added.
+
+2007-11-20
+	 1. t/01-format.t: Removed.  t/03-exhaust.t should do the work.
+	 2. t/03-exhaust.t: Renamed to t/01-exhaust.t.
+	 3. t/_helper.pm: Removed the logfmts(), srctypes(), restypes(),
+	    overtypes() subroutines, and replaced with the @LOGFMTS,
+	    @SRCTYPES, @RESTYPES, @OVERTYPES arrays.  These information are
+	    only used once in one test.  This makes it simpler.
+	 4. t/01-exhaust.t: Finished.  Using loop to test 1800 combinations
+	    of options, arguments, file types and file formats.
+	 5. t/02-apache.t: Removed.  t/01-exhaust.t has replaced it.
+	 6. arclog: Rewrote the new() method of the _private::Format package
+	    so that it simply returns the blessed object.  Test the match
+	    at in the check_format() method, so that it reports matching tests
+	    at $VERBOSE > 2.
+	 7. t/01-exhaust.t: Removed the $nofile, $nogzip and $nobzip2
+	    variables.  The nofile(), nogzip() and nobzip2() subroutines have
+	    replaced them.
+
+2007-11-19
+	 1. t/_helper.pm: Removed the mkrndlog_random() subroutine.  It does
+	    not look like I'll be using it.
+	 2. t/_helper.pm: Fixed the flist() subroutine to exclude non-files.
+	 3. t/_helper.pm: Renamed the preserve_source() subroutine to
+	    prsrvsrc().
+	 4. t/*.t: Removed the strange escaping of double-quotation character
+	    of arclog path.
+	 5. t/_helper.pm: Fixed the cleanup() subroutine to skip clean-up
+	    if the log directory does not exist.
+	 6. t/03-exhaust.t: Added to test all the option/argument
+	    combinations.
+
+2007-11-18
+	 1. arclog: Move the TYPE_PLAIN, TYPE_GZIP and TYPE_BZIP2 constants
+	    from the _private::LogFile package to the main package, so that
+	    other packages can use it, too.
+	 2. arclog: Added $one_arg in the parse_arg() subroutine to deal with
+	    only one argument, and check if the only one argument is STDIN in
+	    advance.  If a compressd source log file is the only one argument,
+	    remove the compresssion suffix (.gz or .bz2) from the output
+	    prefix.
+	 3. _helper.pm: Added the cleanup() subroutine to clean up after
+	    a test.
+	 4. _helper.pm: Added the TYPE_PLAIN, TYPE_GZIP and TYPE_BZIP2
+	    constants for easier use.
+	 5. arclog: Clean up File::Spec::Functions references.
+	 6. Makefile.PL and Build.PL: Changed the clean-up list from "t/log/*"
+	    to "t/log*".
+	 7. t/_helper.pm: Added the preserve_source() subroutine to preserve
+	    the source log file for reference.
+
+2007-11-17
+	 1. arclog: Fixed the remove_temp() method of the _private::LogFile
+	    package, so that it does not try to delete an anonymous
+	    temporarily working file.
+	 2. t/01-format.t: Fixed the test so that it only remove the working
+	    directory on success, and leave the directory on fail.
+
+2007-11-16
+	 1. t/_helper, t/01-format.t: Added.  This is the first real test
+	    suite that test the functionality of arclog, though it does
+	    not cover many of the arclog functionality yet.
+
+2007-11-15
+	 1. UPGRADE, UPGRADE.zh-tw, UPGRADE.zh-cn: Added.
+	 2. arclog: Rename the add_record() method to add() in the
+	    _private::Archive package.
+	 3. arclog: Reformatted the POD document.
+	 4. arclog: Added the sort() method to the _private::Archive package,
+	    and implement the sorting ability.  The new way (sort the
+	    record index but not record themseves) seems to have lesser
+	    memory impact than the original implementation.
+	 5. arclog: Added time zone to the bracked ISO 8601 format.
+	 6. Upgrade notes changed from 2.1.1dev3 to 2.1.1dev4.
+	 6. arclog: Rename the _private::Format::BracketISO package to
+	    _private::Format::ModfISO.  It is not really ISO 8601.
+
+2007-11-14
+	 1. Changes.zh-tw, Changes.zh-cn: Removed.  It is too troblesome to
+	    maintain 3 copies of the change log.
+	 2. arclog: Fixed the rel2abs() subroutine and method so that it use
+	    getpwuid() instead of getlogin(), and respect the HOME environment
+	    variable for the current user.
+	 3. arclog: Renamed the new_read() method as open_read(), the
+	    new_write() method as open_write(), the new_append() method
+	    as open_append().  Replaced the strange architech that start
+	    a new instance with $ioclass, with reusing the same $io object.
+	 4. arclog: Removed the Chinese GPL copyright message.  There should
+	    only be one version of the copyright message, and should not be
+	    any Chinese comment.
+	 5. Moved from GPLv2 to GPLv3.
+	 6. COPYING.zh-tw, COPYING.zh-cn: Removed.  The Chinese translation
+	    of GPLv3 is not available yet.
+	 7. arclog: Removed subroutines arc_log(), open_src(), sort_arcs(),
+	    save_arcs(), check_file_type(), check_gzip(), check_bzip2(),
+	    format_number().  They are not used anymore.
+	 8. arclog: Fixed the read_source() method to save the record count
+	    for later use (like progress bar).
+	 9. arclog: Added show_progress() to show the progress bar.
+	10. Makefile.PL: Fixed to follow the Perl installation location,
+	    but not making our own.
+	11. Build.PL: Added.
+	12. NEW, NEWS.zh-tw, NEWS.zh-cn: Removed, to follow the CPAN release
+	    style.
+	13. arclog: Disallow archiving a same log file more than once.
+	14. arclog: Fixed parse_args() and removed the duplicated short help
+	    on Getopt::Long::GetOptions errors.
+	15. arclog: Remove the _private::Format->to_yyyymm() method.  The
+	    main utility to_yyyymm() subroutine can be used.  There shouldn't
+	    be 2 to_yyyymm() that do the same thing.
+	16. arclog: Adding statistics report to the
+	    _private::LogFile->restore_this_month() method and the
+	    _private::Archive->store_archive() method.
+	17. arclog: Removed the _private::LogFile->rel2abs() method.  The
+	    main utility rel2abs() subroutine can be used.  There shouldn't
+	    be 2 rel2abs() that do the same thing.
+	18. arclog: Fixed show_progress() to reset the clean-up the start
+	    time when progress is finished.
+	19. arclog: Fixed the close() method of the _private::IO::* packages
+	    so that KEEP_THISMONTH restart the log file, too.
+	19. arclog: Added the prepend_records() method to the _private::IO::*
+	    packages, and use prepend_records() to return the records of
+	    this month, so that we can take the advantage of open() only once
+	    on plain text I/O.
+
+2007-11-13
+	 1. arclog, arclog.en.html: Changed "don't" to "do not", "can't" to
+	    "cannot", "there's" to "there is", "it's" to "it is", "we'll" to
+	    "we will", "I'd" to "I had", "that's" to "that is", "this month's
+	    temporary file" to "the temporary file of this month", to help
+	    editor syntax highlighting.
+	 2. arclog: Add commented single quotation mark to the end of
+	    regular expressions that has a single quotation mark, to help
+	    editor syntax highlighting.
+	 3. arclog: Changed "Deal the ~ home directories under UNIX" to
+	    "Deal with the ~ user home directories under UNIX",
+	    "If start from user's home directory" to
+	    "If it starts from the user home directory".
+	 4. arclog: Changed "$VERBOSE >= 2" to "$VERBOSE > 1", $VERBOSE >= 1"
+	    to "$VERBOSE > 0".
+	 5. arclog: Finished the _private::LogFile->check_format() method.
+	    Fixed the parse_args() subroutine to skip empty files, and exit
+	    if no non-empty files left.
+	 6. arclog: Fixed parse_args() to treat "/dev/stdin" as STDIN on
+	    UNIX-like systems.
+	 7. arclog: Changed " -- " to " - " in comment.
+	 8. arclog: Add the new() methods of the _private::Format::* packages
+	    so that it judges if the log record belong to its format and
+	    return accordingly, in order to judge and initialize at a time,
+	    to simplify the code.
+	 9. arclog: Add the name() methods to the _private::Format::* packages
+	    to return the format name.
+	10. arclog: Moved the check_gzip() method and the check_bzip2() method
+	    from the _private::LogFile package to the _private::IO package, so
+	    that other packages can access them too.  Remove the $self in
+	    the check_gzip() method and the check_bzip2() method.  They are not
+	    used at all, and these 2 methods are run as static method now.
+	11. arclog: Changed $OUTPUT to $CONF{"OUTPUT"}.
+	12. arclog: Added the suffix() method to the _private::IO::* packages.
+	13. arclog: Added the _private::Archive package.
+
+2006-06-08
+	 1. arclog: Revised the code with my own coding standard.
+	 2. Changes: ChangeLog renamed to Changes, in order to follow Perl's
+	    convention.
+
+2006-06-05
+	 1. arclog.pl changed to arclog.
+	 2. Removed Chinese text in comments.
+	 3. Added prototype declaration.
+	 4. Version number changed from x.x.x to x.xx,
+	    as Perl preferred.
+	 5. Replaced GNU autoconf with ExtUtils::MakeMaker.
+	 6. SIGNATURE: Added.
+	 7. arclog: changed constants from "use vars"
+	    to "use constant".
+
+2004-01-27
+	 1. Reading loop changed from do {...} while()
+	    to for(;;;) {...}, to fix the problem
+	    "Exiting subroutine via next at ..." when
+	    encounting and skipping a bad record.
+
+2003-01-04
+	 1. File handler EOF read checks were fixed with
+	    defined().
+
+2002-11-13
+	 1. NTP log date-time format support was added.
+
+2002-11-13
+	 1. ISO number was added (ISO 8601) when displaying
+            the ISO date-time format detection.
+         2. Long statistic lines are split for easy reading.
+
+2002-11-12
+	 1. The line of $| was moved to be grouped together
+	    with the autoflush setting.
+	 2. ISO date-time format support was added
+	    (as [yyyy-mm-dd hh:nn:ss].)
+	 3. UNIX mailbox Received: date-time format regular
+	    expression was added.  (sendmail style. Support
+	    not added yet.)
+	 4. Fixed several places where $WORKING_SRC was not
+	    locked when created with tempfile, and not
+	    unlocked when closed.
+	 5. Fixed several places where spaces are between
+	    function name and its opening parenthesis,
+	    according to perlstyle(1).
+	 6. Unnecessary parenthesis after slice and catfile
+	    were removed.
+
+2002-09-26
+	 1. README was rewritten for the autoconf and bzip2
+	    new features.
+	 2. INSTALL was rewritten for the autoconf.
+	 3. HTML documents were rewritten for the autoconf
+	    and bzip2 new features.
+	 4. PGP public key file pgpkey.asc was added.
+	 5. Released as version 2.1.0
+
+2002-09-25
+	 1. GNU autoconf and automake are now used as the
+	    configuration script, in stead of Install.PL.
+	    Install.PL is now retired.
+	 2. autoconf m4 macros IM_CHECK_PERLVER and
+	    IM_CHECK_PM were written.
+	 3. RELEASE_NOTES was renamed as ChangeLog.
+	 4. NEWS was added.
+	 5. AUTHORS was added.
+	 6. THANKS was added.
+	 7. TODO was added.
+
+2002-09-24
+	 1. Compression with gzip binary is added.
+	 2. Compress::Zlib module is now optional but not
+	    required.
+	 3. bzip2 compression is added.
+	 4. File::MMagic and file are now used to check the
+	    file type, in addition to the file name suffix,
+	    with a more preferred order.
+	 5. Keep this month's records is now available for
+	    compressed source log files.
+	 6. check_file_type() was added to check the file
+	    types by either File::MMa
+	 7. check_gzip() was added to check the gzip method
+	    to use.
+	 8. check_bzip2() was added to check the bzip2
+	    method to use.
+
+2002-09-18	version 2.1.0dev2
+	SourceForge Memorial Release.  It's my first time
+	to apply a project from SourceForge.  Mostly are
+	corrections to the documentation.  SourceForge's
+	project page is added to the available download
+	source here.
+	 1. arclog.pl's official home page at Tavern
+	    IMACAT's was restored.
+	 2. The previous version was renamed from
+	    2.1.0-dev1 to 2.1.0dev1, in order to unify
+	    the version number theme.
+	 3. The project space at SourceForge was applied.
+	    Package files are uploaded to SourceForge now.
+	 4. Project virtual host at SourceForge was set up.
+	 5. SourceForge was added into the documentation
+	    as an official website and download source.
+	 6. Documentation were corrected.  Too many places
+	    were corrected.  Ignored.
+	 7. HTML document was rewritten to accommodate
+	    XHTML 1.1 recommendation.
+
+2002-08-31	version 2.1.0dev1
+	Rewrite after almost 1 year, to be run on the
+	newly-released Perl 5.8.0.
+	 1. Filehandles are now saved and passed in global
+	    named variables.  This is the way it should be.
+	    The old way (initialize the file handles by
+	    duplicate the STDIN and assign them) was just
+	    not natural.  It works in Perl 5.6.1, but not in
+	    perl 5.8.0.  The duplicated filehandles are
+	    constants, which cannot be assigned new values.
+	 2. Indents are changed from 1 tab to 4 columns, to
+	    accommodate the Perl style guide documented in
+	    perlstyle(1).  This increases the code
+	    readability.
+	 3. File operation error handlers are now using the
+	    low-precedence logical "or", instead of "||",
+	    which is recommended in perlop(1).  Excessive
+	    parentheses in file operation functions are
+	    removed for this.
+	 4. Traditional Chinese files are now named with
+	    suffix ".zh-tw" instead of ".b5".  Simplified
+	    Chinese files are now named with suffix ".zh-cn"
+	    instead of ".gb".  This is to accommodate
+	    RFC-3066, ISO 639:1988, ISO 3166-1 for language
+	    names.
+	 5. PGP signatures of distribution files are added.
+	 6. bzip2 distribution files are added.
+
+2001-07-18	version 2.0.6
+	 1. A bug that regular expression cannot recognize
+	    apache log format when a user logged in with
+	    a username containing spaces, was solved.
+	 2. A bug that a hyper reference in the English
+	    document was not specified as an absolute URL,
+	    was fixed.
+
+2001-07-18	version 2.0.5
+	 1. A bug that record counter $total was not
+	    initialized at all, was fixed.
+
+2001-07-16	version 2.0.4
+	 1. open_src() was added, as reslog.pl, to read the
+	    source log file by complex rules.
+	 2. Support to reading the gzipped log file was
+	    added.
+	 3. Program execution message was turned from STDOUT
+	    to STDERR.
+	 4. Processing with Compress::Zlib was modified.
+	    gzopen() was modified to open file handles if
+	    possible. Return values was checked more
+	    strictly. Source of error messages was
+	    corrected.
+
+2001-06-29	version 2.0.3
+	 1. The default keep mode was changed to
+	    "this-month".
+	 2. The default keep mode "all" when "--keep" is
+	    specified without mode, was added.
+	 3. The single-letter abbreviations of the override
+	    and keep modes were added
+
+2001-06-29	version 2.0.2
+	 1. A bug that won't delete the source empty file
+	    under keep-delete mode, was fixed
+
+2001-06-28	version 2.0.1
+	 1. A bug that will stop executing when an empty
+	    file is met, was fixed.
+	 2. "none" keep mode was removed. "restart" and
+	    "delete" keep modes were added.
+	 3. Precheck on empty files was added. It bounces
+	    directly when an empty file is found in the
+	    first sight.
+	 4. A bug that there's no documentation on --keep
+	    option in the HTML documents, was fixed. :p
+	 5. The suffix of the temporary working file was
+	    changed to ".tmp-arclog".
+	 6. A typo of "-dhqv" instead of "options" in the
+	    help message was fixed
+
+2001-06-28	version 2.0.0
+	Temporary working file was introduced to reduce the
+	time working on the source log file.
+	 1. Temporary working file was introduced. The
+	    source log file was copied to the temporary
+	    working file and restart first, to maximum
+	    reduce the time occupying it, avoiding usage
+	    of other scripts to restart the log file first.
+	 2. A bug that, when keep status falls back to all,
+	    wrong variable was modified, was fixed. :p
+
+2001-06-28	version 1.6.1
+	 1. Reuse of monthly temporary working file to
+	    reduce the read time for multiple files.
+
+2001-06-27	version 1.6.0
+	Multiple log files was added.
+	 1. Main program codes were moved to arc_log(), to
+	    loop multiple log files.
+
+2001-06-11	version 1.5.1
+	1. A serious bug was fixed. :p I was planning to set
+	   the memory limit dymatically but failed. And I
+	   forgot to return the original codes, which
+	   prevents the program from running.
+	2. The argument checking was modified to report
+	   error if more than necessary arguments are
+	   supplied.
+
+2001-06-10	version 1.5.0
+	Read from STDIN was supported.
+	 1. Read the log file from STDIN as "-" was added.
+	 2. "--prefix" option was removed. The output prefix
+	    was specified in the second argument.
+
+2001-06-10	version 1.4.2dev
+	 1. A bug while displaying log file format
+	    checking message, was fixed.
+	 2. Checking on log file format was moved to when
+	    the first entry was read.
+	 3. Checking on empty log file was moved to after
+	    the whole file was processed.
+	 4. rel2abs() was modified. catdir was replaced with
+	    catfile to fixed the problem with the current
+	    directory ".".
+	 5. The default behavior of --override was modified.
+	    When STDIN is linked with a tty, the default is
+	    ask; else, the default is fail.
+
+2001-06-09	version 1.4.1
+	 1. English HTML document was added.
+	 2. HTML errors in documents were fixed.
+	 3. Some terms were modified in the documents.
+	 4. Irrelevant languages were removed in the HTML
+	    documents.
+	 5. HTML document links between different languages
+	    was added.
+	 6. Web page was modified so that each language has
+	    its own pages, and was linked with each other.
+
+2001-06-08	version 1.4.0
+	First public release.
+	 1. "ask" override mode was added. When the target
+	    archived file exists, it asks the user what to
+	    do individually.
+	 2. "ignore" override mode wad added. When the
+	    target archived file exists, it ignores the
+	    records for that month, avoid overwriting the
+	    target file.
+	 3. "append" override mode was added. When the
+	    target archived file exists, it appends the
+	    records for that month to that file, for easy
+	    merging on seperated log files.
+	 4. --sort option was added, to sort the records
+	    in a log file by time.
+	 5. syslog log file format was supported.
+	 6. HTML documents in both Traditional and
+	    Simplified Chinese were added.
+	 7. A web page was added.
+
+2001-06-07	version 1.3.0
+	Solved the long problem that old log files will be
+	overwrite.
+	 1. Program flow was rewritten. The file open
+	    routine when open an archived file at the first
+	    time was seperated, to insert handlers for
+	    existing old archived files.
+	 2. --override option was added, to set the
+	    override behavior when old archived files exist.
+	 3. Records were now saved to temporary working
+	    files before compressing (if they would be 
+	    compressed). The compressing is done later on
+	    the temporary working files.
+	 4. --compress option was added to set if we should
+	    compress the archived files.
+	 5. Checking on write previledge of the output
+	    directory was added.
+	 6. A bug that rel2abs will wrongly ignore the last
+	    part of a path when it is the current or parent
+	    directory, was fixed.
+	 7. File::Basename was introduced to obtain the
+	    short basename to report on.
+	 8. Anonymous subroutines was introduced to handle
+	    simple options, like help messages or message
+	    levels.
+	 9. Compressing ratio message was added.
+	10. Install.PL was added in the distribution.
+	11. Installation guide was added.
+
+2001-06-06	version 1.2.2
+	 1. autoflush from IO::Handle was introduced, to
+	    autoflush STDOUT solely under debugging mode.
+	 2. Temporary working file method was removed. Works
+	    are done on the source file, to avoid the
+	    garbages when program stopped in the middle.
+	 3. File::Temp was introduced to handle the
+	    temporary working file. Records of this month
+	    was outputs to temporary file at first.
+	 4. $IS_ZIP was added to control the zipping.
+	 5. "wb9" was introduced to zip with highest ratio.
+	 6. Zipping size message was added.
+	 7. format_number() was added to format the numbers.
+	 8. GNU copyright infomation was added.
+	 9. Chinese annotations was added.
+	10. POD documents was added.
+	11. Release notes was added.
+	12. Readme file was added.
+
+2001-06-06	version 1.2.1
+	 1. A serious bug that forgot to return the records
+	    of current month, was fixed. :p
+
+2001-06-05	version 1.2.0
+	 1. Program flow was rewritten. Now it outputs to
+	    the target file without gzipping first. Gzip
+	    will be done next after finishing all outouts.
+	 2. Message level was changed to $VERBOSE.
+	 3. The default message level was changed to 1. The
+	    debugging message level was changed to 2.
+	 4. "quiet" option was added, with message level 0.
+
+2001-06-04	version 1.1.1
+	 1. Some typos was fixed.
+
+2001-06-04	version 1.1.0
+	A serious bug of the previous version, which reads
+	the whole log file into memory and cause system
+	crash, was fixed. ^^;
+	 1. Program flow was rewritten. Writing was done
+	    with reading, to minimize the unnecessary memory
+	    burden.
+	 2. Record sorting was removed, to reduce the memory
+	    usage.
+	 3. %gz object hash was introduced to open multiple
+	    gzipped file altogether.
+	 4. Getopt::Long was introduced to parse the
+	    arguments, in replace of my own argument-parsing
+	    routine.
+	 5. File::Spec::Functions was introduced to handle
+	    the pathnames, with my own rel2abs.
+	 6. Cwd was introduced to obtain the current working
+	    directory.
+
+2001-01-05	version 1.0.1
+	Fixed some typos.
+
+2001-01-05	version 1.0.0
+	First version, rewritten from reslog. Using
+	arguments-parsing and help/version message methods
+	from reslog.

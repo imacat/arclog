@@ -1,0 +1,14 @@
+--- #YAML:1.0
+name:                arclog
+version:             3.04
+abstract:            Archive log files monthly
+license:             gpl
+author:              
+    - imacat <imacat@mail.imacat.idv.tw>
+generated_by:        ExtUtils::MakeMaker version 6.38
+distribution_type:   module
+requires:     
+    Date::Parse:                   0
+meta-spec:
+    url:     http://module-build.sourceforge.net/META-spec-v1.3.html
+    version: 1.3

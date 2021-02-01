@@ -1,0 +1,29 @@
+New in 3.04:
+* Documentation fixes.
+
+New in 3.03:
+* Test suite fixes.
+* Required Perl version number compatible to older versions, to work
+  with the Perl 5.10 warning.
+
+New in 3.02:
+* Test suite improvement.
+
+New in 3.01:
+* Test suite improvement.
+
+New in 3.00:
+* Name changed from arclog.pl to arclog.
+* Perl's s build system ExtUtils::MakeMaker and Module::Build are
+  used instead of GNU autoconf.
+* Added test suite that help quality assurance.
+* License updated to GPLv3.
+
+New in 2.1.0:
+* Added support for bzip2 compression.
+* Added support for gzip compression with gzip binary instead of
+  Compress::Zlib.
+* Added the GNU autoconf configuration script.
+
+New in 2.1.0dev2:
+* Documentation fixes.

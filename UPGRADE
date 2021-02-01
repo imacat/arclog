@@ -1,0 +1,47 @@
+Upgrade Instruction
+
+    Here are a few hints for people upgrading from 2.1.1dev4 or earlier:
+
+* The Script Name is Changed from arclog.pl to arclog
+
+    This is obvious.  If you have any scripts or cron jobs that are running
+arclog, remember to modify your script for the new name.  Of course, you can
+rename arclog to arclog.pl.  It will still work.
+
+    The reason I changed the script and project name is that:  A dot "." in
+the project name is not valid everywhere.  At least SourceForge don't accept
+it.  Besides, "arclog" is enough for a script name under UNIX.  The ".pl" file
+name suffix/extension may be convienent for MS-Windows, but MS-Windows users
+won't run it with explorer file name association anyway, and there is a pl2bat
+to convert "arclog" to "arclog.bat", which would make more sense.  The only
+disadvantage is that I use UltraEdit, which depends on the file name extension
+for the automatic syntax highlighting rules.  But this is not much trouble.  I
+can manuall set it anyway.
+
+
+* The Default Installation Location Is at /usr/bin
+
+    Also, the man page is at /usr/share/man/man1/arclog.1.  This is to follow
+Perl's standard convension, and to avoid breaking ExtUtils::MakeMaker with
+future versions.
+
+    When you run "perl Makefile.PL" or "perl Build.PL", it will hint a list of
+old files found to be removed.  Please delete them manually.
+
+    If you saved them in other places, you have to delete them yourself.
+
+    Also, if you have any scripts or cron jobs that are running arclog, remember
+to modify your script for the new arclog location.  Of course, you can copy
+arclog to the original location.  It will still work.
+
+
+* The Argument of --keep and --override Options Are Required Now
+
+    Support for omitting --keep or --override argument is removed.  This helps
+avoiding confusion for the log file name and the option arguments.
+
+
+imacat
+2007-11-26
+imacat@mail.imacat.idv.tw
+http://www.imacat.idv.tw/

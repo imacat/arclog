@@ -1,0 +1,61 @@
+This file contains message digests of all files listed in MANIFEST,
+signed via the Module::Signature module, version 0.55.
+
+To verify the content in this distribution, first make sure you have
+Module::Signature installed, then type:
+
+    % cpansign -v
+
+It will check each file's integrity, as well as the signature's
+validity.  If "==> Signature verified OK! <==" is not displayed,
+the distribution may already have been compromised, and you should
+not run its Makefile.PL or Build.PL.
+
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
+
+SHA1 91ced1a733e7448edc19eab22482508d58d7b284 AUTHORS
+SHA1 c4c98cc9e7ac5e119752587d0322280a7a71d205 AUTHORS.zh-cn
+SHA1 eb60ee204fcf7244fc0774ac34d05a35a281e82b AUTHORS.zh-tw
+SHA1 412193f4d2ed686ed0041b3c8835461e9d440d68 Build.PL
+SHA1 8624bcdae55baeef00cd11d5dfcfa60f68710a02 COPYING
+SHA1 36d19de5f62f40b91d486cad7698586b56e11968 Changes
+SHA1 22d80da796c88630915181541744461cf96e7f1a INSTALL
+SHA1 00a2c93770fcb552b327cbc4438dc990d6d9c43d INSTALL.zh-cn
+SHA1 b042e58841bcadd56bfb6dbdd52452bcd4215626 INSTALL.zh-tw
+SHA1 e71173ba2be13190d51294a2b132940766c65bfd MANIFEST
+SHA1 92bc0b6b053289e807fe9b339a5817cb8d7369b1 META.yml
+SHA1 60c8024233f1b70534758aea970fe1a7d82bfff8 Makefile.PL
+SHA1 f18322a97f991168d6a85104a8ce658f959431a1 NEWS
+SHA1 183e9814e38c0fdaebc1624be8f1a32fb6649562 README
+SHA1 38db34e5c056d10691f755e524b34e66bca0a981 README.zh-cn
+SHA1 a01809cac1f61ced88f47d823b45c381706fe582 README.zh-tw
+SHA1 3b55f1f8407b87ab8627e3a12c50836ad6429f5c THANKS
+SHA1 aeb1c5d44e73163c50f0997203e49a8a029064d6 THANKS.zh-cn
+SHA1 19bff4abc6eca9c61c875e8aef50fd3d44ec8034 THANKS.zh-tw
+SHA1 48f5fff8ffb487089aa9fdcb9279ba3fd1c508c0 TODO
+SHA1 00e67ef5268c66e8648c5f14da8e7912e2c2f9c5 TODO.zh-cn
+SHA1 2e45a15082ae9630230235d7538dec63c6df18c8 TODO.zh-tw
+SHA1 1f0c3a74a765a905339dd24ac344cc0ad48933e5 UPGRADE
+SHA1 ef05ca4632730a76dbaf9119b3da95b7477aa6c3 UPGRADE.zh-cn
+SHA1 182c625b0f13c8dcc4641adff1499bd705d9a53a UPGRADE.zh-tw
+SHA1 0e45847a9428d8ec1154803e55641d1045f89f4b arclog
+SHA1 dd80c79b178517f082ae9503889c36d0cb4e6cc8 arclog.en.html
+SHA1 9604c39bf6d69cf3fd8bcb036f547761edf04961 arclog.zh-cn.html
+SHA1 ab9d8bd14a36d68790c71044de1d7a67a34b41c5 arclog.zh-tw.html
+SHA1 bd75d59f9d7d9731bfabdc48ecd19e704d218e38 fdl.txt
+SHA1 520fdcf4374af210380db9e0fdaea44c904a15fc pgpkey.asc
+SHA1 525f414c7a0aadc61240a4b0959ca2cda7514c75 t/00-signature.t
+SHA1 96374acc016c20bdbe31dc4ce8eac89f59b642e6 t/01-exhaust.t
+SHA1 504ee1023c7db80427dc633e1611521984909e9d t/02-several.t
+SHA1 497de13a15b6721c5cf5c0be9551dc25a841312c t/03-fallback.t
+SHA1 212ae878ffdf68742339b452ab631b0cbb340880 t/04-errors.t
+SHA1 b85626024d610808bd0909989dcfb9fb20a40485 t/99-pod.t
+SHA1 e698db4a84dbe5200cf37ad73667a595a23d9d04 t/_helper.pm
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.7 (GNU/Linux)
+
+iD8DBQFHVgHci9gubzC5S1wRAgU7AJwK/IesoIYHuMd2vOeyEqYrf25ViwCcD0cc
+tgiH/AXhrVXGRy97R25j7H4=
+=Jrgq
+-----END PGP SIGNATURE-----

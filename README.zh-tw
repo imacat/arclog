@@ -1,0 +1,58 @@
+arclog - 記錄檔每月歸檔程式
+
+  版權所有 (c) 2001-2007 依瑪貓
+  
+  本程式是自由軟體，您可以遵照自由軟體基金會 (Free Software Foundation)
+  出版的 GNU 通用公共許可證條款 (GNU General Public License) 第三版來修
+  改和重新發佈這一程式，或者自由選擇使用任何更新的版本。
+  
+  發佈這一程式的目的是希望它有用，但沒有任何擔保。甚至沒有適合特定目的
+  而隱含的擔保。更詳細的情況請參閱 GNU 通用公共許可證。
+  
+  您應該已經和程式一起收到一份 GNU 通用公共許可證的副本。如果還沒有，參
+  閱<http://www.gnu.org/licenses/>。
+
+    arclog 是每月歸檔程式，將記錄檔中，前月的記錄按月份壓縮歸檔，以節省硬碟空
+間，並避免記錄檔被有心人士破壞。
+
+　　arclog 目前支援 Apache 、 Syslog 、 NTP 、 Apache 1 SSL engine log 及我自
+己用的括弧 ISO 修正格式五種格式的記錄檔，與 gzip 和 bzip2 兩種壓縮法。很多程
+式都可以用 Apache 相容記錄檔格式記錄，如 CUPS 、 ProFTPD 、 Pure-FTPd…等，
+arclog 也可以歸檔這些 Apache 相容格式的記錄檔。
+
+◎說明文件
+
+　　請輸入 perldoc arclog ，閱讀 arclog 的說明。
+
+
+◎安裝指南
+
+　　請詳閱 INSTALL.zh-tw 檔案的安裝指南。
+
+
+◎更新、修正說明
+
+　　請詳閱 Changes 檔案的更新說明，以瞭解新增功能、問題修正、更新等。
+
+
+◎技術支援
+
+　　arclog 的網站在 http://arclog.sourceforge.net/ ，請隨時上網瞭解最新訊息。
+
+　　arclog 有一個郵件通訊 arclog-users@lists.sourceforge.net ，若有任何問題、
+建議、問題回報、修補程式，請寄到郵件通訊上。請連上
+https://lists.sourceforge.net/lists/listinfo/arclog-users 加入我們的郵件通訊
+。除非是私人事務，否則請不要直接寫信給我。郵件通訊會自動歸檔，日後若其他人有
+相同問題，可以直接在通訊舊檔中找到答案，節省大家寶貴的時間。
+
+
+◎版權聲明
+
+　　本程式依 GNU 通用公共許可證 (GPL) 版權發佈，請參考 COPYING 檔案的說明，
+瞭解本程式的版權授權內容。
+
+
+依瑪貓 imacat ^_*'
+2007-12-03
+imacat@mail.imacat.idv.tw
+http://www.imacat.idv.tw/

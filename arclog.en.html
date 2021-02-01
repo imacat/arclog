@@ -1,0 +1,506 @@
+<?xml version="1.0" encoding="US-ASCII" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII" />
+<meta http-equiv="Content-Style-Type" content="text/css" />
+<meta http-equiv="Content-Script-Type" content="text/javascript" />
+<meta name="author" content="imacat" />
+<meta name="copyright" content="&copy; 2001-2008 imacat." />
+<meta name="keywords" content="archive, Apache, Syslog, log files" />
+<link rel="alternate" type="application/xhtml+xml" href="arclog.zh-tw.html"
+     hreflang="zh-tw" title="&#27491;&#39636;&#20013;&#25991;" />
+<link rel="alternate" type="application/xhtml+xml" href="arclog.zh-cn.html"
+     hreflang="zh-cn" title="&#31616;&#20307;&#20013;&#25991;" />
+<link rel="copyright" type="text/plain" href="fdl.txt" />
+<link rel="author" href="mailto:imacat&#64;mail.imacat.idv.tw" />
+<style type="text/css">
+h2, em {
+    text-transform: uppercase;
+}
+.accessguide {
+    font-size: 0.5em;
+    float: left;
+    width: 0.5em;
+}
+</style>
+<title>arclog Version 3.04</title>
+</head>
+<body>
+
+<div class="langs" title="Language Switching Area">
+    <span xml:lang="zh-tw"><a href="arclog.zh-tw.html"
+        title="&#20999;&#25563;&#21040;&#26412;&#38913;&#30340;&#27491;&#39636;&#20013;&#25991;&#29256;&#12290;"
+        hreflang="zh-tw">&#27491;&#39636;&#20013;&#25991;</a></span> |
+    <span xml:lang="zh-cn"><a href="arclog.zh-cn.html"
+        title="&#20999;&#25442;&#21040;&#26412;&#39029;&#30340;&#31616;&#20307;&#20013;&#25991;&#29256;&#12290;"
+        hreflang="zh-cn">&#31616;&#20307;&#20013;&#25991;</a></span> |
+    <span>English</span>
+</div>
+<hr />
+
+
+<div id="body" class="body" title="Page Content Area">
+<div class="accessguide"><a accesskey="C"
+    href="#body" title="Page Content Area">:::</a></div>
+
+<h1><samp>arclog</samp> Version 3.04</h1>
+
+
+<h2>What&rsquo;s New?</h2>
+
+<dl>
+<dt>2007-12-03</dt>
+
+<dd>
+<p><samp>arclog</samp> version 3.04 is released.  Documentation fixes.  Upgrade is not necessary if you have installed <samp>arclog</samp> version 3.00 or later.  <a href="ftp://ftp.imacat.idv.tw/pub/arclog/arclog-3.04.tar.gz" type="application/x-gzip">Download <samp>arclog</samp> version 3.04</a>.</p>
+</dd>
+
+
+<dt>2007-12-03</dt>
+
+<dd>
+<p><samp>arclog</samp> version 3.03 is released.  Test suite fixes.  Required <acronym title="Practical Extraction and Reporting Language">Perl</acronym> version number compatible to older versions, to work with the <acronym title="Practical Extraction and Reporting Language">Perl</acronym> 5.10 warning.  Upgrade is not necessary if you have installed <samp>arclog</samp> version 3.00 or later.  <a href="ftp://ftp.imacat.idv.tw/pub/arclog/arclog-3.03.tar.gz" type="application/x-gzip">Download <samp>arclog</samp> version 3.03</a>.</p>
+</dd>
+
+
+<dt>2007-11-30</dt>
+
+<dd>
+<p><samp>arclog</samp> version 3.02 is released.  Test suite improvement, in order to deal with daylight saving time.  Upgrade is not necessary if you have installed <samp>arclog</samp> version 3.00 or later.  <a href="ftp://ftp.imacat.idv.tw/pub/arclog/arclog-3.02.tar.gz" type="application/x-gzip">Download <samp>arclog</samp> version 3.02</a>.</p>
+</dd>
+
+
+<dt>2007-11-28</dt>
+
+<dd>
+<p><samp>arclog</samp> version 3.01 is released.  Test suite improvement, in order to catch <abbr title="Comprehensive Perl Archive Network">CPAN</abbr> tester failures.  Upgrade is not necessary if you have installed <samp>arclog</samp> version 3.00.  <a href="ftp://ftp.imacat.idv.tw/pub/arclog/arclog-3.01.tar.gz" type="application/x-gzip">Download <samp>arclog</samp> version 3.01</a>.</p>
+</dd>
+
+
+<dt>2007-11-28</dt>
+
+<dd>
+<p><samp>arclog</samp> version 3.00 is released.  The code is completely new borrowed from <a href="http://www.imacat.idv.tw/tech/reslog.html"><samp>reslog</samp></a>, with the name changed from <samp>arclog.pl</samp> to <samp>arclog</samp>, too.  The new object-oriented handlers deal with different compression methods, formats nicely.  <acronym title="Practical Extraction and Reporting Language">Perl</acronym>&rsquo;s s build system <a href="http://search.cpan.org/dist/ExtUtils-MakeMaker/"><samp>ExtUtils::MakeMaker</samp></a> and <a href="http://search.cpan.org/dist/Module-Build/"><samp>Module::Build</samp></a> are used instead of <a href="http://www.gnu.org/software/autoconf/"><acronym title="GNU&rsquo;s Not UNIX">GNU</acronym> <samp>autoconf</samp></a>.  And there is a complete test suite that help quality assurance.  License updated to <a href="http://www.gnu.org/licenses/gpl-3.0.html"><abbr title="GNU General Public License version 3">GPLv3</abbr></a>.  <a href="ftp://ftp.imacat.idv.tw/pub/arclog/arclog-3.00.tar.gz" type="application/x-gzip">Download <samp>arclog</samp> version 3.00</a>.</p>
+</dd>
+
+
+<dt>2002-09-26</dt>
+
+<dd>
+<p><samp>arclog.pl</samp> version 2.1.0 is released.  This is the final 2.1.0 release.  It adds support for <samp>bzip2</samp> compression, <samp>gzip</samp> compression with <samp>gzip</samp> binary instead of <a href="http://search.cpan.org/dist/Compress-Zlib/"><samp>Compress::Zlib</samp></a>, and <a href="http://www.gnu.org/software/autoconf/"><acronym title="GNU&rsquo;s Not UNIX">GNU</acronym> <samp>autoconf</samp></a> configuration script.  <a href="ftp://ftp.imacat.idv.tw/pub/arclog/arclog.pl-2.1.0.tar.gz" type="application/x-gzip">Download <samp>arclog.pl</samp> version 2.1.0</a>.</p>
+</dd>
+
+
+<dt>2002-09-18</dt>
+
+<dd>
+<p><samp>arclog.pl</samp> version 2.1.0dev2 is released.  This release corrects several documentation errors.  It also adds <a href="https://sourceforge.net/">SourceForge</a> in the documentations as one of the sources of <samp>arclog.pl</samp>.  You can think of it as a <q>Source Forge Memorial Release</q>. :p  You do nott have to upgrade to this version in a rush.  <a href="ftp://ftp.imacat.idv.tw/pub/arclog/arclog.pl-2.1.0dev2.tar.gz" type="application/x-gzip">Download <samp>arclog.pl</samp> version 2.1.0dev2</a>.</p>
+</dd>
+
+
+<dt>2002-09-17</dt>
+
+<dd>
+<p><samp>arclog.pl</samp> is hosted at <a href="https://sourceforge.net/projects/arclog/">SourceForge</a> now!  Congratulations!  (Although I&rsquo;m still trying hard to get it working at this time&hellip; ^^; )</p>
+</dd>
+</dl>
+
+
+<h2>Description</h2>
+
+<p><dfn><samp>arclog</samp></dfn> archives the log files monthly.  It strips off previous months&rsquo; log records from the log file, and save them to compressed archive files named <samp>logfile.yyyymm</samp>.  It then saves the hard disk space and prevents potential attacks on log files.</p>
+
+<p>Currently, <samp>arclog</samp> supports <a href="http://httpd.apache.org/">Apache</a> access log, Syslog, <a href="http://www.ntp.org/"><abbr title="network time protocol">NTP</abbr></a>, Apache 1 <abbr title="secure socket layer">SSL</abbr> engine log and my own bracketed, modified <acronym title="International Organization for Standardization">ISO</acronym> date/time log file formats, and <samp>gzip</samp> and <samp>bzip2</samp> compression methods.  Several software projects log (or can log) in a format compatible with the Apache access log, like <a href="http://www.cups.org/"><abbr title="Common UNIX Printing System">CUPS</abbr></a>, <a href="http://www.proftpd.org/">ProFTPD</a>, <a href="http://www.pureftpd.org/">Pure-FTPd</a>&hellip; <abbr title="et cetera">etc.</abbr>, and <samp>arclog</samp> can archive their Apache-like log files, too.</p>
+
+
+<h2>Caution</h2>
+
+<ul>
+<li><p><em>Archiving takes time</em>.  To reduce the time occupying the source log file, <samp>arclog</samp> copies the content of the source log file to a temporary working file and restart the source log file first.  Then <samp>arclog</samp> can take its time working on the temporary working file.  However, please note:</p>
+    <ol>
+    <li><p>If you have a huge log file (several hundreds of <abbr title="megabyte">MB</abbr>s), merely copying still takes a lot of time.  You had better stop logging first, archive the log file and restart logging, to avoid racing condition in writing.  If you archive the log file periodly, it shall not grow too big.</p></li>
+    <li><p>If<samp>arclog</samp> stops in the middle of the execution, it will leave a temporary working file.  The next time <samp>arclog</samp> runs, it will stop when it sees that temporary working file.  You have to process that temporary working file first.  That temporary working file is merely a copy of the original log file.  You can rename and archive it like an ordinary log file to solve this.</p></li>
+    </ol>
+</li>
+
+<li><p>Do not sort unless you have a particular reason.  Sorting has the following potential problem:</p>
+    <ol>
+    <li><p>Sorting may <em>eat huge memory</em> on large log files.  The amount of the memory required depends on the number of records in each archived month.  Modern Linux and <abbr title="Microsoft">MS</abbr>-Windows have memory consuming protection by killing processes that eats too much memory, but it still takes minutes, and your system will hang during that time.  I do not know the memory consuming protection on other operating systems.  If you try, you are at your own risk.</p></li>
+    <li><p>The time units of all recognized log formats are <em>second</em>.  Log records happen in a same second will be sorted by the log file order (if you are archiving several log files at a time) and then the log record order.  I try to ensure that the sorted archived records are in a correct order of the happening events, but I cannot guarantee.  You have to watch out if the order in a second is important.</p></li>
+    </ol>
+</li>
+
+<li><p>Be careful on the Syslog and <abbr title="network time protocol">NTP</abbr> log files:  Syslog and <abbr title="network time protocol">NTP</abbr> does not record the year.  <samp>arclog</samp> uses <a href="http://search.cpan.org/dist/TimeDate/"><samp>Date::Parse</samp></a> to parse the date, which assums the year between this month and last next month if the year is missing.  For <abbr title="example">ex.</abbr>, if today is 2001-06-08, it will then assume the year between 2001-06-30 back to 2000-07-01.  I think this is smart enough.  However, if you do have a Syslog or <abbr title="network time protocol">NTP</abbr> log file that has records older than one year, do not use <samp>arclog</samp>.  It will destroy your log file.</p></li>
+
+<li><p>If read from <samp>STDIN</samp>, please note:</p>
+    <ol>
+    <li><p>You <em>must</em> specify the output prefix if you want to read from <samp>STDIN</samp>, since what it needs is an output pathname prefix, not an output file.</p></li>
+    <li><p><samp>STDIN</samp> cannot be deleted, restarted or partially kept.  If you read from <samp>STDIN</samp>, the keep mode will fall back to <q>keep all</q>.  If you archive several source log files including <samp>STDIN</samp>, the keep mode will fall back to <q>keep all</q> for all source log files, to prevent disaster.</p></li>
+    <li><p>The answers of the <samp>ask</samp> mode is obtained from <samp>STDIN</samp>, too.  Since you have only one <samp>STDIN</samp>, you cannot specify the <samp>ask</samp> mode while reading from <samp>STDIN</samp>.  It will fall back to the <samp>fail</samp> mode in that case.</p></li>
+    </ol>
+</li>
+
+<li><p>I suggest you to install <a href="http://search.cpan.org/dist/File-MMagic/"><samp>File::MMagic</samp></a> instead of counting on the <samp>file</samp> executable.  The internal magic file of <a href="http://search.cpan.org/dist/File-MMagic/"><samp>File::MMagic</samp></a> seems to work better than the <samp>file</samp> executable.  <samp>arclog</samp> treats everything not <samp>gzip</samp> nor <samp>bzip2</samp> compressed as plain text.  When a compressed log file is wrongly recognized as an image, <samp>arclog</samp> will treat it as plain text, read log records directly from it and fail.  This failure does not hurt the source log files, but is still annoying.</p></li>
+</ul>
+
+
+<h2>System Requirement</h2>
+
+<ol>
+<li><p><acronym title="Practical Extraction and Reporting Language">Perl</acronym>, version 5.8.0 or above.  <samp>arclog</samp> uses 3-argument <samp>open()</samp> to duplicate filehandles, which is only supported since 5.8.0.  I have not successfully port this onto earlier versions yet.  Please tell me if you made it.  You can run <q><samp>perl -v</samp></q> to see your current <acronym title="Practical Extraction and Reporting Language">Perl</acronym> version.  If you do not have <acronym title="Practical Extraction and Reporting Language">Perl</acronym>, or if you have an older version of <acronym title="Practical Extraction and Reporting Language">Perl</acronym>, you can download and install/upgrade it from <a href="http://www.perl.com/">Perl website</a>.  If you are using <abbr title="Microsoft">MS</abbr>-Windows, you can download and install <a href="http://www.activestate.com/">ActiveState ActivePerl</a>.</p></li>
+
+<li><p>Required <acronym title="Practical Extraction and Reporting Language">Perl</acronym> modules:</p>
+    
+    <dl>
+    <dt><a href="http://search.cpan.org/dist/TimeDate/"><samp>Date::Parse</samp></a></dt>
+    
+    <dd>
+    <p>This is used to parse the timestamp of the log records.  You can <a href="http://search.cpan.org/dist/TimeDate/">download and install <samp>Date::Parse</samp> from the <acronym title="Comprehensive Perl Archive Network" xml:lang="en">CPAN</acronym> archive</a>, or install it with the <samp>CPAN</samp> shell by running <q><samp>cpan Date::Parse</samp></q>, or install it with the <samp>CPANPLUS</samp> shell by running <q><samp>cpanp i Date::Parse</samp></q>.  Debian/Ubandu Linux users can install it by running <q><samp>apt-get install libtimedate-perl</samp></q>.  Red Hat/Fedora/CentOS Linux users can install it by running <q><samp>yum install perl-TimeDate</samp></q>.  FreeBSD users can install it by running <q><samp>ports install p5-TimeDate</samp></q>.  ActivePerl users can install it by running <q><samp>ppm install Date::Parse</samp></q>.</p>
+    </dd>
+    </dl>
+    
+    <p>If you install <samp>arclog</samp> with the <samp>CPAN</samp> or <samp>CPAN</samp> shell, the above shall be automatically installed.</p>
+</li>
+
+<li><p>Optional <acronym title="Practical Extraction and Reporting Language">Perl</acronym> modules:</p>
+    
+    <dl>
+    <dt><a href="http://search.cpan.org/dist/File-MMagic/"><samp>File::MMagic</samp></a></dt>
+    
+    <dd>
+    <p>This is used to check the file type.  If this is not available, <samp>arclog</samp> will look for the <samp>file</samp> executable instead.  If that is not available, too, <samp>arclog</samp> will judge the file type by its name suffix (extension).  In that case <samp>arclog</samp> will fail when reading from <samp>STDIN</samp>.  You can <a href="http://search.cpan.org/dist/File-MMagic/">download and install <samp>File::MMagic</samp> from the <acronym title="Comprehensive Perl Archive Network" xml:lang="en">CPAN</acronym> archive</a>, or install it with the <samp>CPAN</samp> shell by running <q><samp>cpan File::MMagic</samp></q>, or install it with the <samp>CPANPLUS</samp> shell by running <q><samp>cpanp i Term::ReadKey</samp></q>.  Debian/Ubandu Linux users can install it by running <q><samp>apt-get install libfile-mmagic-perl</samp></q>.  Red Hat/Fedora/CentOS Linux users can install it by running <q><samp>yum install perl-File-MMagic</samp></q>.  FreeBSD users can install it by running <q><samp>ports install p5-File-MMagic</samp></q>.  ActivePerl users can install it by running <q><samp>ppm install File::MMagic</samp></q>.  The alternative <samp>file.exe</samp> for <abbr title="Microsoft">MS</abbr>-Windows can be obtained from the <a href="http://gnuwin32.sourceforge.net/">GnuWin32 home page</a>.  Be sure to save it as <samp>file.exe</samp> somewhere in your <samp>PATH</samp>.</p>
+    
+    <p>It is preferred to use <a href="http://search.cpan.org/dist/File-MMagic/"><samp>File::MMagic</samp></a>.  The <samp>file</samp> executable seems to make mistakes occationally.</p>
+    </dd>
+    
+    <dt><a href="http://search.cpan.org/dist/Compress-Zlib/"><samp>Compress::Zlib</samp></a></dt>
+    
+    <dd>
+    <p>This is used to support read/write of gzip compressed files.  It is only needed when gzip compressed files are encountered.  If it is not available when needed, <samp>arclog</samp> will try to use the <samp>gzip</samp> executable instead.  If that is not available, too, <samp>arclog</samp> will fail.  You can <a href="http://search.cpan.org/dist/Compress-Zlib/">download and install <samp>Compress::Zlib</samp> from the <acronym title="Comprehensive Perl Archive Network" xml:lang="en">CPAN</acronym> archive</a>, or install it with the <samp>CPAN</samp> shell by running <q><samp>cpan Compress::Zlib</samp></q>, or install it with the <samp>CPANPLUS</samp> shell by running <q><samp>cpanp i Compress::Zlib</samp></q>.  Debian/Ubandu Linux users can install it by running <q><samp>apt-get install libcompress-zlib-perl</samp></q>.  Red Hat/Fedora/CentOS Linux users can install it by running <q><samp>yum install perl-Compress-Zlib</samp></q>.  FreeBSD users can install it by running <q><samp>ports install p5-Compress-Zlib</samp></q>.  ActivePerl users can install it by running <q><samp>ppm install Compress::Zlib</samp></q>.  The alternative <samp>gzip.exe</samp> for <abbr title="Microsoft">MS</abbr>-Windows can be obtained from the <a href="http://www.gzip.org/">gzip home page</a>.  Be sure to save it as <samp>gzip.exe</samp> somewhere in your <samp>PATH</samp>.</p>
+    </dd>
+    
+    <dt><a href="http://search.cpan.org/dist/Compress-Bzip2/"><samp>Compress::Bzip2</samp></a>, version 2 or above</dt>
+    
+    <dd>
+    <p>This is used to support read/write of bzip2 compressed files.  It is only needed when bzip2 compressed files are encountered.  If it is not available when needed, <samp>arclog</samp> will try to use the <samp>bzip2</samp> executable instead.  If that is not available, too, <samp>arclog</samp> will fail.  Notice that older versions before 2 does not work, since file <abbr title="input and output">I/O</abbr> compression were not implemented yet.  You can <a href="http://search.cpan.org/dist/Compress-Bzip2/">download and install <samp>Compress::Bzip2</samp> from the <acronym title="Comprehensive Perl Archive Network" xml:lang="en">CPAN</acronym> archive</a>, or install it with the <samp>CPAN</samp> shell by running <q><samp>cpan Compress::Bzip2</samp></q>, or install it with the <samp>CPANPLUS</samp> shell by running <q><samp>cpanp i Compress::Bzip2</samp></q>.  Debian/Ubandu Linux users can install it by running <q><samp>apt-get install libcompress-bzip2-perl</samp></q>.  Red Hat/Fedora/CentOS Linux users can install it by running <q><samp>yum install perl-Compress-Bzip2</samp></q>.  FreeBSD users can install it by running <q><samp>ports install p5-Compress-Bzip2</samp></q>.  ActivePerl users can install it by running <q><samp>ppm install Compress::Bzip2</samp></q>.  The alternative <samp>bzip2.exe</samp> for <abbr title="Microsoft">MS</abbr>-Windows can be obtained from the <a href="http://www.bzip.org/">bzip2 home page</a>.  Be sure to save it as <samp>bzip2.exe</samp> somewhere in your <samp>PATH</samp>.</p>
+    </dd>
+    
+    <dt><a href="http://search.cpan.org/dist/TermReadKey/"><samp>Term::ReadKey</samp></a></dt>
+    
+    <dd>
+    <p>This is used to display the progress bar.  Without this <samp>arclog</samp> will not display the progress bar, but nothing else is different.  The progress bar is a good visual representation of what <samp>arclog</samp> is currently doing.  You can <a href="http://search.cpan.org/dist/TermReadKey/">download and install <samp>Term::ReadKey</samp> from the <acronym title="Comprehensive Perl Archive Network" xml:lang="en">CPAN</acronym> archive</a>, or install it with the <samp>CPAN</samp> shell by running <q><samp>cpan Term::ReadKey</samp></q>, or install it with the <samp>CPANPLUS</samp> shell by running <q><samp>cpanp i Term::ReadKey</samp></q>.  Debian/Ubandu Linux users can install it by running <q><samp>apt-get install libterm-readkey-perl</samp></q>.  Red Hat/Fedora/CentOS Linux users can install it by running <q><samp>yum install perl-TermReadKey</samp></q>.  FreeBSD users can install it by running <q><samp>ports install p5-Term-ReadKey</samp></q>.  ActivePerl users can install it by running <q><samp>ppm install Term::ReadKey</samp></q>.</p>
+    </dd>
+    </dl>
+</li>
+</ol>
+
+
+<h2>Download</h2>
+
+<p><samp>arclog</samp>&rsquo;s official websites is at&hellip;</p>
+
+<ul>
+<li><p><a href="http://arclog.sourceforge.net/"><samp>arclog</samp> web site at SourceForge</a></p></li>
+
+<li><p><a href="https://sourceforge.net/projects/arclog/"><samp>arclog</samp> project page at SourceForge</a></p></li>
+
+<li><p><a href="http://search.cpan.org/~imacat/arclog/"><samp>arclog</samp> project page at <abbr title="Comprehensive Perl Archive Network">CPAN</abbr></a></p></li>
+
+<li><p><a href="http://www.imacat.idv.tw/tech/arclog.html"><samp>arclog</samp> page at Tavern IMACAT&rsquo;s</a></p></li>
+</ul>
+
+<p>You can always download the newest version of <samp>arclog</samp> from&hellip;</p>
+
+<ul>
+<li><p><a href="https://sourceforge.net/project/showfiles.php?group_id=62499"><samp>arclog</samp> download page at SourceForge</a></p></li>
+
+<li><p><a href="http://search.cpan.org/~imacat/arclog/"><samp>arclog</samp>&rsquo;s project page at <abbr title="Comprehensive Perl Archive Network">CPAN</abbr></a></p></li>
+
+<li><p><a href="ftp://ftp.imacat.idv.tw/pub/arclog/">Tavern IMACAT&rsquo;s <abbr title="File Transfer Protocol">FTP</abbr> directory</a></p></li>
+</ul>
+
+<p>imacat&rsquo;s <abbr title="Pretty Good Privacy">PGP</abbr> public key is at&hellip;</p>
+
+<ul>
+<li><p><a href="http://arclog.sourceforge.net/pgpkey.asc">imacat&rsquo;s <abbr title="Pretty Good Privacy">PGP</abbr> key at <samp>arclog</samp> SourceForge web site</a></p></li>
+
+<li><p><a href="http://www.imacat.idv.tw/me/pgpkey.asc">imacat&rsquo;s <abbr title="Pretty Good Privacy">PGP</abbr> key at Tavern IMACAT&rsquo;s</a></p></li>
+</ul>
+
+
+<h2>Install</h2>
+
+<p>If you are upgrading from <samp>arclog.pl</samp> 2.1.1dev4 or earlier, please read <samp>UPGRADE</samp> for some upgrade instruction.</p>
+
+<h3>Install with <a href="http://search.cpan.org/dist/ExtUtils-MakeMaker/"><samp>ExtUtils::MakeMaker</samp></a></h3>
+
+<p><samp>arclog</samp> uses standard <acronym title="Practical Extraction and Reporting Language">Perl</acronym> installation with <a href="http://search.cpan.org/dist/ExtUtils-MakeMaker/"><samp>ExtUtils::MakeMaker</samp></a>.  Follow these steps:</p>
+
+<blockquote><pre>
+% perl Makefile.PL
+% make
+% make test
+% make install
+</pre></blockquote>
+
+<p>When running <q><samp>make install</samp></q>, make sure you have the priviledge to write to the installation location.  This usually requires the <samp>root</samp> priviledge.</p>
+
+<p>If you are using ActivePerl under <abbr title="Microsoft">MS</abbr>-Windows, you should use <samp>nmake</samp> instead of <samp>make</samp>.  <a href="ftp://ftp.microsoft.com/Softlib/MSLFILES/nmake15.exe" type="application/x-dosexec"><samp>nmake</samp> can be obtained from the Microsoft <abbr title="File Transfer Protocol">FTP</abbr> site.</a></p>
+
+<p>If you want to install into another location, you can set the <samp>PREFIX</samp>.  For example, to install into your home when you are not <samp>root</samp>:</p>
+
+<blockquote><pre>
+% perl Makefile.PL PREFIX=/home/jessica
+</pre></blockquote>
+
+<p>Refer to the docuemntation of <a href="http://search.cpan.org/dist/ExtUtils-MakeMaker/"><samp>ExtUtils::MakeMaker</samp></a> for more installation options (by running <q><samp>perldoc ExtUtils::MakeMaker</samp></q>).</p>
+
+
+<h3>Install with <a href="http://search.cpan.org/dist/Module-Build/"><samp>Module::Build</samp></a></h3>
+
+<p>You can install with <a href="http://search.cpan.org/dist/Module-Build/"><samp>Module::Build</samp></a> instead, if you prefer.  Follow these steps:</p>
+
+<blockquote><pre>
+% perl Build.PL
+% ./Build
+% ./Build test
+% ./Build install
+</pre></blockquote>
+
+<p>When running <q><samp>./Build install</samp></q>, make sure you have the priviledge to write to the installation location.  This usually requires the <samp>root</samp> priviledge.</p>
+
+<p>If you want to install into another location, you can set the <samp>--prefix</samp>.  For example, to install into your home when you are not <samp>root</samp>:</p>
+
+<blockquote><pre>
+% perl Build.PL --prefix=/home/jessica
+</pre></blockquote>
+
+<p>Refer to the docuemntation of <a href="http://search.cpan.org/dist/Module-Build/"><samp>Module::Build</samp></a> for more installation options (by running <q><samp>perldoc Module::Build</samp></q>).</p>
+
+
+<h2>Options</h2>
+
+<pre>
+./arclog [options] logfile&hellip; [output]
+./arclog [-h|-v]
+</pre>
+
+
+<dl>
+<dt><var>logfile</var></dt>
+
+<dd>
+<p>The log file to be archived.  Specify <q><samp>-</samp></q> to read from <samp>STDIN</samp>.  Multiple log files are supported.  <samp>gzip</samp> or <samp>bzip2</samp> compressed files are supported, too.</p>
+</dd>
+
+
+<dt><var>output</var></dt>
+
+<dd>
+<p>The prefix of the output files.  The output files will be named as <samp>output.<var>yyyymm</var></samp>, <abbr title="id est">i.e.</abbr>, <samp>output.200101</samp>, <samp>output.200102</samp>.  If not specified, the default is the same as the log file.  You must specify this if you want to read from <samp>STDIN</samp>.  You cannot specify <q><samp>-</samp></q> (<samp>STDIN</samp>), since this is only a name prefix, not the output file.</p>
+</dd>
+
+
+<dt>-c, --compress <var>method</var></dt>
+
+<dd>
+<p>Specify the compression method for the archived files.  Log files usually have large number of simular lines.  Compress them saves you lots of disk spaces.  (And this is why we want to <em>archive</em> them.)  Currently the following compression methods are supported:</p>
+
+
+<dl>
+<dt>g, gzip</dt>
+
+<dd>
+<p>Compress with <samp>gzip</samp>.  This is the default.  <samp>arclog</samp> can use <a href="http://search.cpan.org/dist/Compress-Zlib/"><samp>Compress::Zlib</samp></a> to compress instead of calling <samp>gzip</samp>.  This can be safer and faster for not calling foreign binaries.  But if <a href="http://search.cpan.org/dist/Compress-Zlib/"><samp>Compress::Zlib</samp></a> is not installed, it will try to use <samp>gzip</samp> binary instead.  If <samp>gzip</samp> binary is not available, either, but <samp>gzip</samp> compression is required, the program will fail.</p>
+</dd>
+
+
+<dt>b, bzip2</dt>
+
+<dd>
+<p>Compress with <samp>bzip2</samp>.  <samp>arclog</samp> can use <a href="http://search.cpan.org/dist/Compress-Bzip2/"><samp>Compress::Bzip2</samp></a> to compress instead of calling <samp>bzip2</samp>.  This can be safer and faster for not calling foreign binaries.  But if <a href="http://search.cpan.org/dist/Compress-Bzip2/"><samp>Compress::Bzip2</samp></a> is not installed, it will try to use <samp>bzip2</samp> binary instead.  If <samp>bzip2</samp> binary is not available, either, but <samp>bzip2</samp> compression is required, the program will fail.</p>
+</dd>
+
+
+<dt>n, none</dt>
+
+<dd>
+<p>No compression at all.  (Why? :p)</p>
+</dd>
+</dl>
+</dd>
+
+
+<dt>--nocompress</dt>
+
+<dd>
+<p>Do not compress the archived files.  This is equal to <q><samp>--compress none</samp></q>.</p>
+</dd>
+
+
+<dt>-s, --sort</dt>
+
+<dd>
+<p>Sort the records by time (and then the record order).  Sorting eats huge memory and <abbr title="central processing unit">CPU</abbr>, so it is disabled by default.  See the description above for a detailed illustration on sorting.</p>
+</dd>
+
+
+<dt>--nosort</dt>
+
+<dd>
+<p>Do not sort the records.  This is the default.</p>
+</dd>
+
+
+<dt>-o, --override <var>mode</var></dt>
+
+<dd>
+<p>Whether we should overwrite the existing archived files.  Currently the following modes are supported:</p>
+
+
+<dl>
+<dt>o, overwrite</dt>
+
+<dd>
+<p>Overwrite existing target files.  You will lost these existing records.  Use with care.  This is helpful if you are sure the master log file has the most complete records.</p>
+</dd>
+
+
+<dt>a, append</dt>
+
+<dd>
+<p>Append the records to the existing target files.  You may destroy the log file completely by putting irrelevant entries altogether accidently.  Use with care.  This is helpful if you append want to merge 2 or more log files, for <abbr title="example">ex.</abbr>, 2 log files of different periods.</p>
+</dd>
+
+
+<dt>i, ignore</dt>
+
+<dd>
+<p>Ignore any existing target file, and discard all the records of those months.  You will lost these log records.  Use with care.  This is helpful if you are supplying log records for the missing months, or if you are merging the log records in a complex manner.</p>
+</dd>
+
+
+<dt>f, fail</dt>
+
+<dd>
+<p>Stop processing whenever a target file exists, to prevent destroying existing files by accident.  This should be mostly wanted when run from some automatic mechanism, like <samp>crontab</samp>.  So, this is the default if no terminal is found at <samp>STDIN</samp>.</p>
+</dd>
+
+
+<dt>ask</dt>
+
+<dd>
+<p>Ask you what to do when a target file exists.  This should be most wanted if you are running <samp>arclog</samp> interactively.  So, this is the default if a terminal is found at <samp>STDIN</samp>.  The answers are read from <samp>STDIN</samp>.  Since you have only one <samp>STDIN</samp>, you cannot specify this mode if you want read the log file from <samp>STDIN</samp>.  In that case, it will fall back to the <samp>fail</samp> mode.  Also, if <samp>arclog</samp> cannot get its answer from <samp>STDIN</samp>, for <abbr title="example">ex.</abbr>, on a closed <samp>STDIN</samp> like <samp>crontab</samp>, it will fall back to <samp>fail</samp> mode.</p>
+</dd>
+</dl>
+</dd>
+
+
+<dt>-k, --keep <var>mode</var></dt>
+
+<dd>
+<p>What to keep in the source file.  Current the following modes are supported:</p>
+
+<dl>
+<dt>a, all</dt>
+
+<dd>
+<p>Keep the source file after records are archived.</p>
+</dd>
+
+
+<dt>r, restart</dt>
+
+<dd>
+<p>Restart the source log file after records are archived.</p>
+</dd>
+
+
+<dt>d, delete</dt>
+
+<dd>
+<p>Delete the source log file after records are archived.</p>
+</dd>
+
+
+<dt>t, this-month</dt>
+
+<dd>
+<p>Archive and strip records of previous months off from the log file.  Keep the records of this month in the source log file, to be archived next month.  This is designed to be run from <samp>crontab</samp> monthly, so this is the default.</p>
+</dd>
+</dl>
+</dd>
+
+
+<dt>-d, --debug</dt>
+
+<dd>
+<p>Show the detailed debugging messages.</p>
+</dd>
+
+
+<dt>-q, --quiet</dt>
+
+<dd>
+<p>Shihhhhhh.  Only yell when errors.</p>
+</dd>
+
+
+<dt>-h, --help</dt>
+
+<dd>
+<p>Display the help message and exit.</p>
+</dd>
+
+
+<dt>-v, --version</dt>
+
+<dd>
+<p>Output version information and exit.</p>
+</dd>
+</dl>
+
+
+<h2>Copyright</h2>
+
+<p>Copyright &copy; 2001-2007 imacat..</p>
+
+<p>This program is free software: you can redistribute it and/or modify it under the terms of the <cite><acronym title="GNU&rsquo;s Not UNIX">GNU</acronym> General Public License</cite> as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.</p>
+
+<p>This program is distributed in the hope that it will be useful, but <em>without any warranty</em>; without even the implied warranty of <em>merchantability</em> or <em>FITNESS FOR A PARTICULAR PURPOSE</em>.  See the <cite><acronym title="GNU&rsquo;s Not UNIX">GNU</acronym> General Public License</cite> for more details.</p>
+
+<p>You should have received a copy of the <cite><acronym title="GNU&rsquo;s Not UNIX">GNU</acronym> General Public License</cite> along with this program.  If not, see <samp>&lt;<a href="http://www.gnu.org/licenses/">http://www.gnu.org/licenses/</a>&gt;</samp>.</p>
+
+
+<h2>Release Notes</h2>
+
+<p>Please read the <samp>NEWS</samp> for the new functions and bug fixes.</p>
+
+
+<h2>Support</h2>
+
+<p><samp>arclog</samp> is hosted on <a href="https://sourceforge.net/">SourceForge</a>, <a href="http://www.cpan.org/"><acronym title="Comprehensive Perl Archive Network">CPAN</acronym></a> and <a href="http://www.imacat.idv.tw/">Tavern IMACAT&rsquo;s</a>.  For the latest infomation, see</p>
+
+<ul>
+<li><p><a href="http://arclog.sourceforge.net/"><samp>arclog</samp> web site at SourceForge</a>.</p></li>
+<li><p><a href="http://sourceforge.net/projects/arclog/"><samp>arclog</samp> project page at SourceForge</a>.</p></li>
+<li><p><a href="http://search.cpan.org/dist/arclog/"><samp>arclog</samp> project page at <abbr title="Comprehensive Perl Archive Network">CPAN</abbr></a>.</p></li>
+<li><p><a href="http://www.imacat.idv.tw/tech/arclog.html"><samp>arclog</samp> page at Tavern IMACAT&rsquo;s</a>.</p></li>
+</ul>
+
+<p>There is a <a href="mailto:arclog-users&#64;lists.sourceforge.net"><samp>arclog</samp> mailing list</a> hosted at <a href="https://sourceforge.net/">SourceForge</a>.  Please submit your questions, suggestions or bug reports there.  It is a <a href="http://www.list.org/">Mailman</a> mailing list.  For more information, see the <a href="https://lists.sourceforge.net/lists/listinfo/arclog-users"><samp>arclog</samp> mailing list page</a>.  Alternatively, you can send a mail to the <a href="mailto:arclog-users-request&#64;lists.sourceforge.net"><acronym title="electronic mail">e-mail</acronym> command mailbox</a> with the subject <samp>help</samp> for a list of available <acronym title="electronic mail">e-mail</acronym> commands.</p>
+
+</div>
+
+
+<hr />
+<div id="footer" class="footer" title="Page Footer Area">
+<address>By <a href="mailto:imacat&#64;mail.imacat.idv.tw">imacat</a>, first version 2001-06-08, last updated 2008-11-18</address>
+
+<address>Copyright &copy; 2001-2008 imacat.  Please read the <a href="fdl.txt">copyright</a> before copying.</address>
+</div>
+
+</body>
+</html>

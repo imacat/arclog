@@ -6,7 +6,7 @@ use Config qw(%Config);
 use Module::Build;
 
 # Check if there is any old file
-use vars qw(%old_version);
+our (%old_version);
 %old_version = qw();
 foreach (qw(/usr/sbin/arclog.pl
             /usr/sbin/arclog
@@ -52,7 +52,7 @@ my $build = Module::Build->new(
     dist_version_from	=> "arclog",
     dist_abstract	=> "Archive log files monthly",
     dist_author		=> "imacat <imacat\@mail.imacat.idv.tw>",
-    license		=> "gpl",
+    license		=> "apache_2_0",
     sign		=> 1,
     
     script_files	=> [ "arclog" ],

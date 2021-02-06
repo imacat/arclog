@@ -7,7 +7,7 @@ use Config qw(%Config);
 use ExtUtils::MakeMaker;
 
 # Check if there is any old file
-use vars qw(%old_version);
+our (%old_version);
 %old_version = qw();
 foreach (qw(/usr/sbin/arclog.pl
             /usr/sbin/arclog
@@ -49,7 +49,7 @@ EOT
 }
 
 # Optional prerequisite modules
-use vars qw(%OPT_PREREQ);
+our (%OPT_PREREQ);
 %OPT_PREREQ = (
     "File::MMagic"	=> 0,
     "Compress::Zlib"	=> 0,
@@ -72,7 +72,7 @@ WriteMakefile(
     VERSION_FROM	=> "arclog",
     ABSTRACT		=> "Archive log files monthly",
     AUTHOR		=> "imacat <imacat\@mail.imacat.idv.tw>",
-    LICENSE		=> "gpl",
+    LICENSE		=> "apache_2_0",
     PREREQ_PM		=> {
         "Date::Parse"		=> 0,
     },

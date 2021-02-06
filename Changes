@@ -1,19 +1,35 @@
 arclog change log
 
+2020-02-06
+	 1. Replaced the messy GNU-styled, multi-lingual documents with a
+	    single Markdown README.md.
+	 2. Added the GitHub repository to the document, and removed the
+	    SourceForge website, my web page, and the SourceForge mailing
+	    list from the document.
+	 3. Removed the document license, and my PGP key from the package.
+	    Removed the signature file from the repository.
+	 4. Various fixes to avoid JetBrains IDE problem detection.
+
+2020-02-04
+	 Changed the license from GPLv3 to APLv2.
+
+2020-02-01
+	 arclog is hosted on GitHub now.
+
 2008-11-18
-	 1. INSTALL and arclog.en.html: Fixed the grammer on
+	 1. INSTALL and arclog.en.html: Fixed the grammar on
 	    installation with the CPAN or CPANPLUS shell, changed
 	    "install with the CPAN shell using" and "install with the
 	    CPANPLUS shell using" to "install it with the CPAN shell
 	    by running" and "install it with the CPANPLUS shell by
 	    running".
-	 2. INSTALL* and ahping.*.html: Changed "Fedora/Red Hat" to
+	 2. INSTALL* and reslog.*.html: Changed "Fedora/Red Hat" to
 	    "Red Hat/Fedora/CentOS".
 	 3. INSTALL.zh-tw and INSTALL.zh-cn: Added the missing
 	    Date::Parse to the required modules section.
 
 2008-11-17
-	 1. INSTALL and arclog.en.html: Fixed the grammer on required
+	 1. INSTALL and arclog.en.html: Fixed the grammar on required
 	    and optional module installation, changed "install using"
 	    and "install this using" to "install it by running".
 
@@ -23,7 +39,7 @@ arclog change log
 	    in required modules.  It is stated in the module
 	    description in detail now.
 	 3. arclog.*.html: Fixed so that installation from source and
-	    with shells are joint into one sentense.
+	    with shells are joint into one sentence.
 
 2008-11-12
 	 1. INSTALL, arclog.en.html: Updated "don't" and "won't" to
@@ -85,8 +101,8 @@ arclog change log
 	    _private::LogFile class.
 
 2007-12-03
-	 1. arclog.zh-tw.html, arclog.zh-cn.html: "§£ª›≠n¶w∏À∑s™©" was
-	    revised to "§£ª›≠n™@Ø≈∑s™©".
+	 1. arclog.zh-tw.html, arclog.zh-cn.html: "‰∏çÈúÄË¶ÅÂÆâË£ùÊñ∞Áâà" was
+	    revised to "‰∏çÈúÄË¶ÅÊòáÁ¥öÊñ∞Áâà".
 	 2. Build.PL: Fixed the comment.  This file is "Build.PL",
 	    not "Makefile.PL".
 	 3. Build.PL: Added "use warnings;".
@@ -95,14 +111,14 @@ arclog change log
 	Documentation fix.
 	 1. arclog, arclog.*.html, README*: Added the information on
 	    the usability of arclog with log files from many
-	    softwares that log with an Apache-like log format.
+	    software that log with an Apache-like log format.
 	 2. arclog.zh-cn.html: Fixed the version number.
 	 3. arclog.*.html: Added <dfn>...</dfn> to the description.
 
 2007-12-03	version 3.03
 	 1. t/*.t: Fixed so that send frread($fs) instead of $cs
 	    is sent to arclog STDIN when reading from STDIN, so that
-	    compresed content is sent to arclog but not the original
+	    compressed content is sent to arclog but not the original
 	    content.
 	 2. arclog.zh-tw.html, arclog.zh-cn.html: Revised the Chinese
 	    text on "3-argument open()" so that it is more readable.
@@ -151,7 +167,7 @@ arclog change log
 
 2007-11-29
 	 1. arclog.zh-tw.html, TODO.zh-tw, TODO.zh-cn: Changed
-	    '¡c≈È§§§Â' to '•ø≈È§§§Â'.
+	    'ÁπÅÈ´î‰∏≠Êñá' to 'Ê≠£È´î‰∏≠Êñá'.
 
 2007-11-28	version 3.01
 	Test suite improvement.
@@ -159,7 +175,7 @@ arclog change log
 	 2. Makefile.PL: Use "use 5.008" instead of "use 5.8.0" for
 	    compatibility with older Perl.
 	 3. t/01-exhaust.t: Added $vardump to error output, to catch
-	    CPAN testers test failurs.
+	    CPAN testers test failures.
 	 4. Return to build distribution with ExtUtils::MakeMaker,
 	    since Module::Build did not preserve the original file
 	    date.
@@ -300,8 +316,8 @@ arclog change log
 	    other packages can use it, too.
 	 2. arclog: Added $one_arg in the parse_arg() subroutine to deal with
 	    only one argument, and check if the only one argument is STDIN in
-	    advance.  If a compressd source log file is the only one argument,
-	    remove the compresssion suffix (.gz or .bz2) from the output
+	    advance.  If a compressed source log file is the only one argument,
+	    remove the compression suffix (.gz or .bz2) from the output
 	    prefix.
 	 3. _helper.pm: Added the cleanup() subroutine to clean up after
 	    a test.
@@ -332,22 +348,22 @@ arclog change log
 	 3. arclog: Reformatted the POD document.
 	 4. arclog: Added the sort() method to the _private::Archive package,
 	    and implement the sorting ability.  The new way (sort the
-	    record index but not record themseves) seems to have lesser
+	    record index but not record themselves) seems to have lesser
 	    memory impact than the original implementation.
-	 5. arclog: Added time zone to the bracked ISO 8601 format.
+	 5. arclog: Added time zone to the bracketed ISO 8601 format.
 	 6. Upgrade notes changed from 2.1.1dev3 to 2.1.1dev4.
 	 6. arclog: Rename the _private::Format::BracketISO package to
 	    _private::Format::ModfISO.  It is not really ISO 8601.
 
 2007-11-14
-	 1. Changes.zh-tw, Changes.zh-cn: Removed.  It is too troblesome to
+	 1. Changes.zh-tw, Changes.zh-cn: Removed.  It is too troublesome to
 	    maintain 3 copies of the change log.
 	 2. arclog: Fixed the rel2abs() subroutine and method so that it use
 	    getpwuid() instead of getlogin(), and respect the HOME environment
 	    variable for the current user.
 	 3. arclog: Renamed the new_read() method as open_read(), the
 	    new_write() method as open_write(), the new_append() method
-	    as open_append().  Replaced the strange architech that start
+	    as open_append().  Replaced the strange architect that start
 	    a new instance with $ioclass, with reusing the same $io object.
 	 4. arclog: Removed the Chinese GPL copyright message.  There should
 	    only be one version of the copyright message, and should not be
@@ -443,7 +459,7 @@ arclog change log
 	 1. Reading loop changed from do {...} while()
 	    to for(;;;) {...}, to fix the problem
 	    "Exiting subroutine via next at ..." when
-	    encounting and skipping a bad record.
+	    encountering and skipping a bad record.
 
 2003-01-04
 	 1. File handler EOF read checks were fixed with
@@ -536,12 +552,12 @@ arclog change log
 2002-08-31	version 2.1.0dev1
 	Rewrite after almost 1 year, to be run on the
 	newly-released Perl 5.8.0.
-	 1. Filehandles are now saved and passed in global
+	 1. File handles are now saved and passed in global
 	    named variables.  This is the way it should be.
 	    The old way (initialize the file handles by
 	    duplicate the STDIN and assign them) was just
 	    not natural.  It works in Perl 5.6.1, but not in
-	    perl 5.8.0.  The duplicated filehandles are
+	    perl 5.8.0.  The duplicated file handles are
 	    constants, which cannot be assigned new values.
 	 2. Indents are changed from 1 tab to 4 columns, to
 	    accommodate the Perl style guide documented in
@@ -603,7 +619,7 @@ arclog change log
 	    file is met, was fixed.
 	 2. "none" keep mode was removed. "restart" and
 	    "delete" keep modes were added.
-	 3. Precheck on empty files was added. It bounces
+	 3. Pre-check on empty files was added. It bounces
 	    directly when an empty file is found in the
 	    first sight.
 	 4. A bug that there's no documentation on --keep
@@ -635,7 +651,7 @@ arclog change log
 
 2001-06-11	version 1.5.1
 	1. A serious bug was fixed. :p I was planning to set
-	   the memory limit dymatically but failed. And I
+	   the memory limit dynamically but failed. And I
 	   forgot to return the original codes, which
 	   prevents the program from running.
 	2. The argument checking was modified to report
@@ -685,7 +701,7 @@ arclog change log
 	 3. "append" override mode was added. When the
 	    target archived file exists, it appends the
 	    records for that month to that file, for easy
-	    merging on seperated log files.
+	    merging on separated log files.
 	 4. --sort option was added, to sort the records
 	    in a log file by time.
 	 5. syslog log file format was supported.
@@ -698,7 +714,7 @@ arclog change log
 	overwrite.
 	 1. Program flow was rewritten. The file open
 	    routine when open an archived file at the first
-	    time was seperated, to insert handlers for
+	    time was separated, to insert handlers for
 	    existing old archived files.
 	 2. --override option was added, to set the
 	    override behavior when old archived files exist.
@@ -708,7 +724,7 @@ arclog change log
 	    the temporary working files.
 	 4. --compress option was added to set if we should
 	    compress the archived files.
-	 5. Checking on write previledge of the output
+	 5. Checking on write privilege of the output
 	    directory was added.
 	 6. A bug that rel2abs will wrongly ignore the last
 	    part of a path when it is the current or parent
@@ -727,7 +743,7 @@ arclog change log
 	    autoflush STDOUT solely under debugging mode.
 	 2. Temporary working file method was removed. Works
 	    are done on the source file, to avoid the
-	    garbages when program stopped in the middle.
+	    garbage when program stopped in the middle.
 	 3. File::Temp was introduced to handle the
 	    temporary working file. Records of this month
 	    was outputs to temporary file at first.
@@ -735,7 +751,7 @@ arclog change log
 	 5. "wb9" was introduced to zip with highest ratio.
 	 6. Zipping size message was added.
 	 7. format_number() was added to format the numbers.
-	 8. GNU copyright infomation was added.
+	 8. GNU copyright information was added.
 	 9. Chinese annotations was added.
 	10. POD documents was added.
 	11. Release notes was added.
@@ -748,7 +764,7 @@ arclog change log
 2001-06-05	version 1.2.0
 	 1. Program flow was rewritten. Now it outputs to
 	    the target file without gzipping first. Gzip
-	    will be done next after finishing all outouts.
+	    will be done next after finishing all outputs.
 	 2. Message level was changed to $VERBOSE.
 	 3. The default message level was changed to 1. The
 	    debugging message level was changed to 2.
@@ -772,7 +788,7 @@ arclog change log
 	    arguments, in replace of my own argument-parsing
 	    routine.
 	 5. File::Spec::Functions was introduced to handle
-	    the pathnames, with my own rel2abs.
+	    the pathname, with my own rel2abs.
 	 6. Cwd was introduced to obtain the current working
 	    directory.
 

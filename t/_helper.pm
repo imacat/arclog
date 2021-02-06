@@ -1,65 +1,64 @@
 # _helper.pm - A simple test suite helper
 
-# Copyright (c) 2007 imacat
-# 
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-# 
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-# 
-# You should have received a copy of the GNU General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+# Copyright (c) 2007-2021 imacat.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
 package _helper;
 use 5.005;
 use strict;
 use warnings;
 use base qw(Exporter);
-use vars qw($VERSION @EXPORT);
+our ($VERSION, @EXPORT);
 $VERSION = "0.01";
-@EXPORT = qw();
-push @EXPORT, qw(fread frread fwrite frwrite);
-push @EXPORT, qw(runcmd whereis ftype flist prsrvsrc cleanup);
-push @EXPORT, qw(nofile nogzip nobzip2);
-push @EXPORT, qw(mkrndlog_existing);
-push @EXPORT, qw(mkrndlog_apache mkrndlog_syslog);
-push @EXPORT, qw(mkrndlog_ntp mkrndlog_apachessl mkrndlog_modfiso);
-push @EXPORT, qw(randword);
-push @EXPORT, qw(TYPE_PLAIN TYPE_GZIP TYPE_BZIP2);
-push @EXPORT, qw(@LOGFMTS @SRCTYPES @RESTYPES @KEEPTYPES @OVERTYPES);
+@EXPORT = qw(
+    read_file read_raw_file write_file write_raw_file
+    run_cmd where_is file_type list_files preserve_source clean_up
+    has_no_file has_no_gzip has_no_bzip2
+    make_log_file
+    make_apache_log_file make_syslog_log_file
+    make_ntp_log_file make_apache_ssl_log_file make_modified_iso_log_file
+    random_word
+    TYPE_TEXT TYPE_GZIP TYPE_BZIP2
+    @LOG_FORMATS @SOURCE_TYPES @RESULT_TYPES @KEEP_MODES @OVERRIDE_MODES);
 # Prototype declaration
-sub thisfile();
-sub fread($);
-sub frread($);
-sub fwrite($$);
-sub frwrite($$);
-sub runcmd($@);
-sub whereis($);
-sub ftype($);
-sub flist($);
-sub prsrvsrc($);
-sub cleanup($$$);
-sub nofile();
-sub nogzip();
-sub nobzip2();
-sub mkrndlog_existing($$$@);
-sub mkrndlog_apache($;$);
-sub mkrndlog_syslog($;$);
-sub mkrndlog_ntp($;$);
-sub mkrndlog_apachessl($;$);
-sub mkrndlog_modfiso($;$);
-sub monrng_one($);
-sub monrng_rand();
+sub this_file();
+sub read_file($);
+sub read_raw_file($);
+sub write_file($$);
+sub write_raw_file($$);
+sub run_cmd($@);
+sub where_is($);
+sub file_type($);
+sub list_files($);
+sub preserve_source($);
+sub clean_up($$$);
+sub has_no_file();
+sub has_no_gzip();
+sub has_no_bzip2();
+sub make_log_file($$$@);
+sub make_apache_log_file($;$);
+sub make_syslog_log_file($;$);
+sub make_ntp_log_file($;$);
+sub make_apache_ssl_log_file($;$);
+sub make_modified_iso_log_file($;$);
+sub month_range($);
+sub random_month_ranges();
 sub split_months(\@);
 sub insert_malformed(\@);
-sub randword();
-sub randip();
-sub randdomain();
+sub random_word();
+sub random_ip();
+sub random_domain();
 
 use Data::Dumper;
 use ExtUtils::MakeMaker qw();
@@ -72,386 +71,392 @@ use File::Temp qw(tempfile);
 use Time::Local qw(timelocal);
 $Data::Dumper::Indent = 1;
 
-use vars qw(%WHEREIS $NOFILE $NOGZIP $NOBZIP2);
-%WHEREIS = qw();
-undef $NOFILE;
-undef $NOGZIP;
-undef $NOBZIP2;
+our (%WHERE_IS, $HAS_NO_FILE, $HAS_NO_GZIP, $HAS_NO_BZIP2);
+%WHERE_IS = qw();
+undef $HAS_NO_FILE;
+undef $HAS_NO_GZIP;
+undef $HAS_NO_BZIP2;
 
-use constant TYPE_PLAIN => "text/plain";
+use constant TYPE_TEXT => "text/plain";
 use constant TYPE_GZIP => "application/x-gzip";
 use constant TYPE_BZIP2 => "application/x-bzip2";
 
-use vars qw(@LOGFMTS @SRCTYPES @RESTYPES @KEEPTYPES @OVERTYPES);
+our (@LOG_FORMATS, @SOURCE_TYPES, @RESULT_TYPES, @KEEP_MODES, @OVERRIDE_MODES);
 # All the log format information
-@LOGFMTS = (    {   "title" => "Apache acecss log",
-                    "sub"   => \&mkrndlog_apache, },
-                {   "title" => "Syslog",
-                    "sub"   => \&mkrndlog_syslog, },
-                {   "title" => "NTP",
-                    "sub"   => \&mkrndlog_ntp, },
-                {   "title" => "Apache SSL engine log",
-                    "sub"   => \&mkrndlog_apachessl, },
-                {   "title" => "modified ISO 8601 date/time",
-                    "sub"   => \&mkrndlog_modfiso, }, );
+@LOG_FORMATS = (
+    {   "title" => "Apache access log",
+        "sub"   => \&make_apache_log_file, },
+    {   "title" => "Syslog",
+        "sub"   => \&make_syslog_log_file, },
+    {   "title" => "NTP",
+        "sub"   => \&make_ntp_log_file, },
+    {   "title" => "Apache SSL engine log",
+        "sub"   => \&make_apache_ssl_log_file, },
+    {   "title" => "modified ISO 8601 date/time",
+        "sub"   => \&make_modified_iso_log_file, }, );
 # All the source type information
-@SRCTYPES = (   {   "title" => "plain text source",
-                    "type"  => TYPE_PLAIN,
-                    "suf"   => "",
-                    "skip"  => 0, },
-                {   "title" => "gzip source",
-                    "type"  => TYPE_GZIP,
-                    "suf"   => ".gz",
-                    "skip"  => nogzip, },
-                {   "title" => "bzip2 source",
-                    "type"  => TYPE_BZIP2,
-                    "suf"   => ".bz2",
-                    "skip"  => nobzip2, }, );
+@SOURCE_TYPES = (
+    {   "title" => "plain text source",
+        "type"  => TYPE_TEXT,
+        "suf"   => "",
+        "skip"  => 0, },
+    {   "title" => "gzip source",
+        "type"  => TYPE_GZIP,
+        "suf"   => ".gz",
+        "skip"  => has_no_gzip, },
+    {   "title" => "bzip2 source",
+        "type"  => TYPE_BZIP2,
+        "suf"   => ".bz2",
+        "skip"  => has_no_bzip2, }, );
 # All the result type information
-@RESTYPES = (   {   "title" => "default compress",
-                    "type"  => TYPE_GZIP,
-                    "suf"   => ".gz",
-                    "skip"  => nogzip,
-                    "opts"  => [], },
-                {   "title" => "gzip compress",
-                    "type"  => TYPE_GZIP,
-                    "suf"   => ".gz",
-                    "skip"  => nogzip,
-                    "opts"  => [qw(-c g)], },
-                {   "title" => "bzip2 compress",
-                    "type"  => TYPE_BZIP2,
-                    "suf"   => ".bz2",
-                    "skip"  => nobzip2,
-                    "opts"  => [qw(-c b)], },
-                {   "title" => "no compress",
-                    "type"  => TYPE_PLAIN,
-                    "suf"   => "",
-                    "skip"  => 0,
-                    "opts"  => [qw(-c n)], }, );
-# All the keep type information
-@KEEPTYPES = (  {   "title" => "keep default",
-                    "opts"  => [],
-                    "tm"    => 1,
-                    "del"   => 0,
-                    "tmp"   => 1,
-                    "stdin" => 0, },
-                {   "title" => "keep all",
-                    "opts"  => [qw(-k a)],
-                    "tm"    => 0,
-                    "del"   => 0,
-                    "tmp"   => 0,
-                    "stdin" => 0, },
-                {   "title" => "keep delete",
-                    "opts"  => [qw(-k d)],
-                    "tm"    => 0,
-                    "del"   => 1,
-                    "tmp"   => 1,
-                    "stdin" => 0, },
-                {   "title" => "keep restart",
-                    "opts"  => [qw(-k r)],
-                    "tm"    => 0,
-                    "del"   => 0,
-                    "tmp"   => 1,
-                    "stdin" => 0, },
-                {   "title" => "keep this month",
-                    "opts"  => [qw(-k t)],
-                    "tm"    => 1,
-                    "del"   => 0,
-                    "tmp"   => 1,
-                    "stdin" => 0, },
-                {   "title" => "keep STDIN",
-                    "opts"  => [],
-                    "tm"    => 0,
-                    "del"   => 0,
-                    "tmp"   => 0,
-                    "stdin" => 1, }, );
-# All the override type information
-@OVERTYPES = (  {   "title" => "override no existing",
-                    "opts"  => [],
-                    "mkex"  => 0,
-                    "ok"    => 1,
-                    "ce"    => sub { $_[1]; }, },
-                {   "title" => "override default",
-                    "opts"  => [],
-                    "mkex"  => 1,
-                    "ok"    => 0,
-                    "ce"    => sub { $_[0]; }, },
-                {   "title" => "override overwrite",
-                    "opts"  => [qw(-o o)],
-                    "mkex"  => 1,
-                    "ok"    => 1,
-                    "ce"    => sub { $_[1]; }, },
-                {   "title" => "override append",
-                    "opts"  => [qw(-o a)],
-                    "mkex"  => 1,
-                    "ok"    => 1,
-                    "ce"    => sub { $_[0] . $_[1]; }, },
-                {   "title" => "override ignore",
-                    "opts"  => [qw(-o i)],
-                    "mkex"  => 1,
-                    "ok"    => 1,
-                    "ce"    => sub { $_[0] || $_[1]; }, },
-                {   "title" => "override fail",
-                    "opts"  => [qw(-o f)],
-                    "mkex"  => 1,
-                    "ok"    => 0,
-                    "ce"    => sub { $_[0]; }, }, );
+@RESULT_TYPES = (
+    {   "title" => "default compress",
+        "type"  => TYPE_GZIP,
+        "suf"   => ".gz",
+        "skip"  => has_no_gzip,
+        "opts"  => [], },
+    {   "title" => "gzip compress",
+        "type"  => TYPE_GZIP,
+        "suf"   => ".gz",
+        "skip"  => has_no_gzip,
+        "opts"  => [qw(-c g)], },
+    {   "title" => "bzip2 compress",
+        "type"  => TYPE_BZIP2,
+        "suf"   => ".bz2",
+        "skip"  => has_no_bzip2,
+        "opts"  => [qw(-c b)], },
+    {   "title" => "no compress",
+        "type"  => TYPE_TEXT,
+        "suf"   => "",
+        "skip"  => 0,
+        "opts"  => [qw(-c n)], }, );
+# All the keep mode information
+@KEEP_MODES = (
+    {   "title" => "keep default",
+        "opts"  => [],
+        "tm"    => 1,
+        "del"   => 0,
+        "tmp"   => 1,
+        "stdin" => 0, },
+    {   "title" => "keep all",
+        "opts"  => [qw(-k a)],
+        "tm"    => 0,
+        "del"   => 0,
+        "tmp"   => 0,
+        "stdin" => 0, },
+    {   "title" => "keep delete",
+        "opts"  => [qw(-k d)],
+        "tm"    => 0,
+        "del"   => 1,
+        "tmp"   => 1,
+        "stdin" => 0, },
+    {   "title" => "keep restart",
+        "opts"  => [qw(-k r)],
+        "tm"    => 0,
+        "del"   => 0,
+        "tmp"   => 1,
+        "stdin" => 0, },
+    {   "title" => "keep this month",
+        "opts"  => [qw(-k t)],
+        "tm"    => 1,
+        "del"   => 0,
+        "tmp"   => 1,
+        "stdin" => 0, },
+    {   "title" => "keep STDIN",
+        "opts"  => [],
+        "tm"    => 0,
+        "del"   => 0,
+        "tmp"   => 0,
+        "stdin" => 1, }, );
+# All the override mode information
+@OVERRIDE_MODES = (
+    {   "title"     => "override no existing",
+        "opts"      => [],
+        "exists"    => 0,
+        "ok"        => 1,
+        "ce"        => sub { $_[1]; }, },
+    {   "title"     => "override default",
+        "opts"      => [],
+        "exists"    => 1,
+        "ok"        => 0,
+        "ce"        => sub { $_[0]; }, },
+    {   "title"     => "override overwrite",
+        "opts"      => [qw(-o o)],
+        "exists"    => 1,
+        "ok"        => 1,
+        "ce"        => sub { $_[1]; }, },
+    {   "title"     => "override append",
+        "opts"      => [qw(-o a)],
+        "exists"    => 1,
+        "ok"        => 1,
+        "ce"        => sub { $_[0] . $_[1]; }, },
+    {   "title"     => "override ignore",
+        "opts"      => [qw(-o i)],
+        "exists"    => 1,
+        "ok"        => 1,
+        "ce"        => sub { $_[0] || $_[1]; }, },
+    {   "title"     => "override fail",
+        "opts"      => [qw(-o f)],
+        "exists"    => 1,
+        "ok"        => 0,
+        "ce"        => sub { $_[0]; }, }, );
 
-# thisfile: Return the name of this file
-sub thisfile() { basename($0); }
+# Return the name of this file
+sub this_file() { basename($0); }
 
-# fread: A simple reader to read a log file in any supported format
-sub fread($) {
+# A simple reader to read a log file in any supported format
+sub read_file($) {
     local ($_, %_);
     my ($file, $content);
     $file = $_[0];
-    
+
     # non-existing file
     return undef if !-e $file;
-    
+
     # a gzip compressed file
     if ($file =~ /\.gz$/) {
         # Compress::Zlib
         if (eval {  require Compress::Zlib;
-                    import Compress::Zlib qw(gzopen);
+                    Compress::Zlib->import(qw(gzopen));
                     1; }) {
+            use Compress::Zlib qw(gzopen);
             my ($FH, $gz);
             $content = "";
-            open $FH, $file             or die thisfile . ": $file: $!";
-            $gz = gzopen($FH, "rb")     or die thisfile . ": $file: $!";
+            open $FH, $file             or die this_file . ": $file: $!";
+            $gz = gzopen($FH, "rb")     or die this_file . ": $file: $!";
             while (1) {
                 ($gz->gzread($_, 10240) != -1)
-                                        or die thisfile . ": $file: " . $gz->gzerror;
+                                        or die this_file . ": $file: " . $gz->gzerror;
                 $content .= $_;
                 last if length $_ < 10240;
             }
-            $gz->gzclose                and die thisfile . ": $file: " . $gz->gzerror;
+            $gz->gzclose                and die this_file . ": $file: " . $gz->gzerror;
             return $content;
-        
+
         # gzip executable
         } else {
             my ($PH, $CMD);
-            $CMD = whereis "gzip";
+            $CMD = where_is "gzip";
             $CMD = "\"$CMD\" -cd \"$file\"";
-            open $PH, "$CMD |"          or die thisfile . ": $CMD: $!";
+            open $PH, "$CMD |"          or die this_file . ": $CMD: $!";
             $content = join "", <$PH>;
-            close $PH                   or die thisfile . ": $CMD: $!";
+            close $PH                   or die this_file . ": $CMD: $!";
             return $content;
         }
-    
+
     # a bzip compressed file
     } elsif ($file =~ /\.bz2$/) {
         # Compress::Bzip2
         if (eval {  require Compress::Bzip2;
-                    import Compress::Bzip2 2.00;
-                    import Compress::Bzip2 qw(bzopen);
+                    Compress::Bzip2->import(2.00);
+                    Compress::Bzip2->import(qw(bzopen));
                     1; }) {
             my ($FH, $bz);
             $content = "";
-            open $FH, $file             or die thisfile . ": $file: $!";
-            $bz = bzopen($FH, "rb")     or die thisfile . ": $file: $!";
+            open $FH, $file             or die this_file . ": $file: $!";
+            $bz = bzopen($FH, "rb")     or die this_file . ": $file: $!";
             while (1) {
                 ($bz->bzread($_, 10240) != -1)
-                                        or die thisfile . ": $file: " . $bz->bzerror;
+                                        or die this_file . ": $file: " . $bz->bzerror;
                 $content .= $_;
                 last if length $_ < 10240;
             }
-            $bz->bzclose                and die thisfile . ": $file: " . $bz->bzerror;
+            $bz->bzclose                and die this_file . ": $file: " . $bz->bzerror;
             return $content;
-        
+
         # bzip2 executable
         } else {
             my ($PH, $CMD);
-            $CMD = whereis "bzip2";
+            $CMD = where_is "bzip2";
             $CMD = "bzip2 -cd \"$file\"";
-            open $PH, "$CMD |"          or die thisfile . ": $CMD: $!";
+            open $PH, "$CMD |"          or die this_file . ": $CMD: $!";
             $content = join "", <$PH>;
-            close $PH                   or die thisfile . ": $CMD: $!";
+            close $PH                   or die this_file . ": $CMD: $!";
             return $content;
         }
-    
+
     # a plain text file
     } else {
         my $FH;
-        open $FH, $file                 or die thisfile . ": $file: $!";
+        open $FH, $file                 or die this_file . ": $file: $!";
         $content = join "", <$FH>;
-        close $FH                       or die thisfile . ": $file: $!";
+        close $FH                       or die this_file . ": $file: $!";
         return $content;
     }
 }
 
-# frread: A raw file reader
-sub frread($) {
+# A raw file reader
+sub read_raw_file($) {
     local ($_, %_);
     my ($file, $content, $FH, $size);
     $file = $_[0];
-    
+
     # non-existing file
     return undef if !-e $file;
-    
+
     $size = (stat $file)[7];
-    open $FH, $file                     or die thisfile . ": $file: $!";
-    binmode $FH                         or die thisfile . ": $file: $!";
+    open $FH, $file                     or die this_file . ": $file: $!";
+    binmode $FH                         or die this_file . ": $file: $!";
     (read($FH, $content, $size) == $size)
-                                        or die thisfile . ": $file: $!";
-    close $FH                           or die thisfile . ": $file: $!";
+                                        or die this_file . ": $file: $!";
+    close $FH                           or die this_file . ": $file: $!";
     return $content;
 }
 
-# fwrite: A simple writer to write a log file in any supported format
-sub fwrite($$) {
+# A simple writer to write a log file in any supported format
+sub write_file($$) {
     local ($_, %_);
     my ($file, $content);
     ($file, $content) = @_;
-    
+
     # a gzip compressed file
     if ($file =~ /\.gz$/) {
         # Compress::Zlib
         if (eval {  require Compress::Zlib;
-                    import Compress::Zlib qw(gzopen);
+                    Compress::Zlib->import(qw(gzopen));
                     1; }) {
             my ($FH, $gz);
-            open $FH, ">$file"          or die thisfile . ": $file: $!";
-            $gz = gzopen($FH, "wb9")    or die thisfile . ": $file: $!";
+            open $FH, ">$file"          or die this_file . ": $file: $!";
+            $gz = gzopen($FH, "wb9")    or die this_file . ": $file: $!";
             ($gz->gzwrite($content) == length $content)
-                                        or die thisfile . ": $file: " . $gz->gzerror;
-            $gz->gzclose                and die thisfile . ": $file: " . $gz->gzerror;
+                                        or die this_file . ": $file: " . $gz->gzerror;
+            $gz->gzclose                and die this_file . ": $file: " . $gz->gzerror;
             return;
-        
+
         # gzip executable
         } else {
             my ($PH, $CMD);
-            $CMD = whereis "gzip";
+            $CMD = where_is "gzip";
             $CMD = "\"$CMD\" -c9f > \"$file\"";
-            open $PH, "| $CMD"          or die thisfile . ": $CMD: $!";
-            print $PH $content          or die thisfile . ": $CMD: $!";
-            close $PH                   or die thisfile . ": $CMD: $!";
+            open $PH, "| $CMD"          or die this_file . ": $CMD: $!";
+            print $PH $content          or die this_file . ": $CMD: $!";
+            close $PH                   or die this_file . ": $CMD: $!";
             return;
         }
-    
+
     # a bzip compressed file
     } elsif ($file =~ /\.bz2$/) {
         # Compress::Bzip2
         if (eval {  require Compress::Bzip2;
-                    import Compress::Bzip2 2.00;
-                    import Compress::Bzip2 qw(bzopen);
+                    Compress::Bzip2->import(2.00);
+                    Compress::Bzip2->import(qw(bzopen));
                     1; }) {
             my ($FH, $bz);
-            open $FH, ">$file"          or die thisfile . ": $file: $!";
-            $bz = bzopen($FH, "wb9")    or die thisfile . ": $file: $!";
+            open $FH, ">$file"          or die this_file . ": $file: $!";
+            $bz = bzopen($FH, "wb9")    or die this_file . ": $file: $!";
             ($bz->bzwrite($content, length $content) == length $content)
-                                        or die thisfile . ": $file: " . $bz->bzerror;
-            $bz->bzclose                and die thisfile . ": $file: " . $bz->bzerror;
+                                        or die this_file . ": $file: " . $bz->bzerror;
+            $bz->bzclose                and die this_file . ": $file: " . $bz->bzerror;
             return;
-        
+
         # bzip2 executable
         } else {
             my ($PH, $CMD);
-            $CMD = whereis "bzip2";
+            $CMD = where_is "bzip2";
             $CMD = "\"$CMD\" -9f > \"$file\"";
-            open $PH, "| $CMD"        or die thisfile . ": $CMD: $!";
-            print $PH $content        or die thisfile . ": $CMD: $!";
-            close $PH                 or die thisfile . ": $CMD: $!";
+            open $PH, "| $CMD"        or die this_file . ": $CMD: $!";
+            print $PH $content        or die this_file . ": $CMD: $!";
+            close $PH                 or die this_file . ": $CMD: $!";
             return;
         }
-    
+
     # a plain text file
     } else {
         my $FH;
-        open $FH, ">$file"              or die thisfile . ": $file: $!";
-        print $FH $content              or die thisfile . ": $file: $!";
-        close $FH                       or die thisfile . ": $file: $!";
+        open $FH, ">$file"              or die this_file . ": $file: $!";
+        print $FH $content              or die this_file . ": $file: $!";
+        close $FH                       or die this_file . ": $file: $!";
         return;
     }
 }
 
-# frwrite: A raw file writer
-sub frwrite($$) {
+# A raw file writer
+sub write_raw_file($$) {
     local ($_, %_);
     my ($file, $content, $FH);
     ($file, $content) = @_;
-    
-    open $FH, ">$file"                  or die thisfile . ": $file: $!";
-    binmode $FH                         or die thisfile . ": $file: $!";
-    print $FH $content                  or die thisfile . ": $file: $!";
-    close $FH                           or die thisfile . ": $file: $!";
+
+    open $FH, ">$file"                  or die this_file . ": $file: $!";
+    binmode $FH                         or die this_file . ": $file: $!";
+    print $FH $content                  or die this_file . ": $file: $!";
+    close $FH                           or die this_file . ": $file: $!";
     return;
 }
 
-# runcmd: Run a command and return the result
-sub runcmd($@) {
+# Run a command and return the result
+sub run_cmd($@) {
     local ($_, %_);
-    my ($retno, $out, $err, $in, @cmd, $cmd, $OUT, $ERR, $STDOUT, $STDERR, $PH);
+    my ($ret_no, $out, $err, $in, @cmd, $cmd, $OUT, $ERR, $STDOUT, $STDERR, $PH);
     ($in, @cmd) = @_;
-    
+
     $err = "Running " . join(" ", map "\"$_\"", @cmd) . "\n";
     $out = "";
-    
-    open $STDOUT, ">&", \*STDOUT        or die thisfile . ": STDOUT: $!";
-    open $STDERR, ">&", \*STDERR        or die thisfile . ": STDERR: $!";
-    $OUT = tempfile                     or die thisfile . ": tempfile: $!";
-    binmode $OUT                        or die thisfile . ": tempfile: $!";
-    $ERR = tempfile                     or die thisfile . ": tempfile: $!";
-    binmode $ERR                        or die thisfile . ": tempfile: $!";
-    open STDOUT, ">&", $OUT             or die thisfile . ": tempfile: $!";
-    binmode STDOUT                      or die thisfile . ": tempfile: $!";
-    open STDERR, ">&", $ERR             or die thisfile . ": tempfile: $!";
-    binmode STDERR                      or die thisfile . ": tempfile: $!";
-    
+
+    open $STDOUT, ">&", \*STDOUT        or die this_file . ": STDOUT: $!";
+    open $STDERR, ">&", \*STDERR        or die this_file . ": STDERR: $!";
+    $OUT = tempfile                     or die this_file . ": tempfile: $!";
+    binmode $OUT                        or die this_file . ": tempfile: $!";
+    $ERR = tempfile                     or die this_file . ": tempfile: $!";
+    binmode $ERR                        or die this_file . ": tempfile: $!";
+    open STDOUT, ">&", $OUT             or die this_file . ": tempfile: $!";
+    binmode STDOUT                      or die this_file . ": tempfile: $!";
+    open STDERR, ">&", $ERR             or die this_file . ": tempfile: $!";
+    binmode STDERR                      or die this_file . ": tempfile: $!";
+
     $cmd = join " ", map "\"$_\"", @cmd;
     if ($^O eq "MSWin32") {
-        open $PH, "| $cmd"              or die thisfile . ": $cmd: $!";
+        open $PH, "| $cmd"              or die this_file . ": $cmd: $!";
     } else {
-        open $PH, "|-", @cmd            or die thisfile . ": $cmd: $!";
+        open $PH, "|-", @cmd            or die this_file . ": $cmd: $!";
     }
-    binmode $PH                         or die thisfile . ": $cmd: $!";
-    print $PH $in                       or die thisfile . ": $cmd: $!";
+    binmode $PH                         or die this_file . ": $cmd: $!";
+    print $PH $in                       or die this_file . ": $cmd: $!";
     close $PH;
-    $retno = $?;
-    
-    open STDOUT, ">&", $STDOUT          or die thisfile . ": tempfile: $!";
-    open STDERR, ">&", $STDERR          or die thisfile . ": tempfile: $!";
-    
-    seek $OUT, 0, SEEK_SET              or die thisfile . ": tempfile: $!";
+    $ret_no = $?;
+
+    open STDOUT, ">&", $STDOUT          or die this_file . ": tempfile: $!";
+    open STDERR, ">&", $STDERR          or die this_file . ": tempfile: $!";
+
+    seek $OUT, 0, SEEK_SET              or die this_file . ": tempfile: $!";
     $out = join "", <$OUT>;
-    close $OUT                          or die thisfile . ": tempfile: $!";
-    seek $ERR, 0, SEEK_SET              or die thisfile . ": tempfile: $!";
+    close $OUT                          or die this_file . ": tempfile: $!";
+    seek $ERR, 0, SEEK_SET              or die this_file . ": tempfile: $!";
     $err = join "", <$ERR>;
-    close $ERR                          or die thisfile . ": tempfile: $!";
-    
-    return ($retno, $out, $err);
+    close $ERR                          or die this_file . ": tempfile: $!";
+
+    return ($ret_no, $out, $err);
 }
 
-# whereis: Find an executable
+# Find an executable
 #   Code inspired from CPAN::FirstTime
-sub whereis($) {
+sub where_is($) {
     local ($_, %_);
     my ($file, $path);
     $file = $_[0];
-    return $WHEREIS{$file} if exists $WHEREIS{$file};
+    return $WHERE_IS{$file} if exists $WHERE_IS{$file};
     foreach my $dir (path) {
-        return ($WHEREIS{$file} = $path)
+        return ($WHERE_IS{$file} = $path)
             if defined($path = MM->maybe_command(catfile($dir, $file)));
     }
-    return ($WHEREIS{$file} = undef);
+    return ($WHERE_IS{$file} = undef);
 }
 
-# ftype: Find the file type
-sub ftype($) {
+# Find the file type
+sub file_type($) {
     local ($_, %_);
     my $file;
     $file = $_[0];
     return undef unless -e $file;
     # Use File::MMagic
     if (eval { require File::MMagic; 1; }) {
-        $_ = new File::MMagic->checktype_filename($file);
+        $_ = File::MMagic->new->checktype_filename($file);
         return "application/x-gzip" if /gzip/;
         return "application/x-bzip2" if /bzip2/;
         # All else are text/plain
         return "text/plain";
     }
     # Use file executable
-    if (defined($_ = whereis "file")) {
+    if (defined($_ = where_is "file")) {
         $_ = join "", `"$_" "$file"`;
         return "application/x-gzip" if /gzip/;
         return "application/x-bzip2" if /bzip2/;
@@ -462,45 +467,45 @@ sub ftype($) {
     return undef;
 }
 
-# flist: Obtain the files list in a directory
-sub flist($) {
+# Obtain the files list in a directory
+sub list_files($) {
     local ($_, %_);
     my ($dir, $DH);
     $dir = $_[0];
     @_ = qw();
-    opendir $DH, $dir                   or die thisfile . ": $dir: $!";
+    opendir $DH, $dir                   or die this_file . ": $dir: $!";
     while (defined($_ = readdir $DH)) {
         next if $_ eq "." || $_ eq ".." || !-f "$dir/$_";
         push @_, $_;
     }
-    closedir $DH                        or die thisfile . ": $dir: $!";
+    closedir $DH                        or die this_file . ": $dir: $!";
     return join " ", sort @_;
 }
 
-# prsrvsrc: Preserve the source test files
-sub prsrvsrc($) {
+# Preserve the source test files
+sub preserve_source($) {
     local ($_, %_);
     my ($dir, $DH);
     $dir = $_[0];
     @_ = qw();
-    opendir $DH, $dir                   or die thisfile . ": $dir: $!";
+    opendir $DH, $dir                   or die this_file . ": $dir: $!";
     while (defined($_ = readdir $DH)) {
         next if $_ eq "." || $_ eq ".." || !-f "$dir/$_";
         push @_, $_;
     }
-    closedir $DH                        or die thisfile . ": $dir: $!";
+    closedir $DH                        or die this_file . ": $dir: $!";
     rmtree "$dir/source";
     mkpath "$dir/source";
-    frwrite "$dir/source/$_", frread "$dir/$_"
+    write_raw_file "$dir/source/$_", read_raw_file "$dir/$_"
         foreach @_;
     return;
 }
 
-# cleanup: Clean up the test files
-sub cleanup($$$) {
+# Clean up the test files
+sub clean_up($$$) {
     local ($_, %_);
-    my ($r, $dir, $testno, $testname, $c);
-    ($r, $dir, $testno) = @_;
+    my ($r, $dir, $test_no, $test_name, $c);
+    ($r, $dir, $test_no) = @_;
     # Nothing to clean up
     return unless -e $dir;
     # Success
@@ -509,47 +514,47 @@ sub cleanup($$$) {
         return;
     }
     # Fail - keep the test files for failure investigation
-    $testname = basename((caller)[1]);
-    $testname =~ s/\.t$//;
+    $test_name = basename((caller)[1]);
+    $test_name =~ s/\.t$//;
     $c = 1;
-    $c++ while -e ($_ = "$dir.$testname.$testno.$c");
-    rename $dir, $_                     or die thisfile . ": $dir, $_: $!";
+    $c++ while -e ($_ = "$dir.$test_name.$test_no.$c");
+    rename $dir, $_                     or die this_file . ": $dir, $_: $!";
     return;
 }
 
-# nofile: If we have the file type checker somewhere
-sub nofile() {
-    $NOFILE = eval { require File::MMagic; 1; }
-                || defined whereis "file"?
+# If we have the file type checker somewhere
+sub has_no_file() {
+    $HAS_NO_FILE = eval { require File::MMagic; 1; }
+                || defined where_is "file"?
             0: "File::MMagic or file executable not available"
-        if !defined $NOFILE;
-    return $NOFILE;
+        if !defined $HAS_NO_FILE;
+    return $HAS_NO_FILE;
 }
 
-# nogzip: If we have gzip support somewhere
-sub nogzip() {
-    $NOGZIP = eval { require Compress::Zlib; 1; }
-                || defined whereis "gzip"?
+# If we have gzip support somewhere
+sub has_no_gzip() {
+    $HAS_NO_GZIP = eval { require Compress::Zlib; 1; }
+                || defined where_is "gzip"?
             0: "Compress::Zlib or gzip executable not available"
-        if !defined $NOGZIP;
-    return $NOGZIP;
+        if !defined $HAS_NO_GZIP;
+    return $HAS_NO_GZIP;
 }
 
-# nobzip2: If we have bzip2 support somewhere
-sub nobzip2() {
-    $NOBZIP2 = eval { require Compress::Bzip2; import Compress::Bzip2 2.00; 1; }
-                || defined whereis "bzip2"?
+# If we have bzip2 support somewhere
+sub has_no_bzip2() {
+    $HAS_NO_BZIP2 = eval { require Compress::Bzip2; Compress::Bzip2->import(2.00); 1; }
+                || defined where_is "bzip2"?
             0: "Compress::Bzip2 v2 or bzip2 executable not available"
-        if !defined $NOBZIP2;
-    return $NOBZIP2;
+        if !defined $HAS_NO_BZIP2;
+    return $HAS_NO_BZIP2;
 }
 
-# mkrndlog_existing: Create a random existing log file
-sub mkrndlog_existing($$$@) {
+# Create a random existing log file
+sub make_log_file($$$@) {
     local ($_, %_);
-    my ($mkrndlog, $dir, $filepat, @months, %contents);
-    ($mkrndlog, $dir, $filepat, @months) = @_;
-    
+    my ($make_log_file, $dir, $filename_pattern, @months, %contents);
+    ($make_log_file, $dir, $filename_pattern, @months) = @_;
+
     # Find a non-decided month and have an existing log
     $_{$_[int rand @_]} = 1 if (@_ = grep !exists $_{$_}, @months) > 0;
     # Find a non-decided month and not have an existing log
@@ -559,239 +564,239 @@ sub mkrndlog_existing($$$@) {
     %contents = qw();
     foreach my $m (@months) {
         my ($file, $path);
-        $file = sprintf($filepat, $m);
+        $file = sprintf($filename_pattern, $m);
         $path = catfile($dir, $file);
         if ($_{$m}) {
-            $contents{$file} = (&$mkrndlog($path, $m))[0];
+            $contents{$file} = (&$make_log_file($path, $m))[0];
         } else {
             $contents{$file} = "";
         }
     }
-    
+
     return %contents;
 }
 
-# mkrndlog_apache: Create a random Apache access log file
-sub mkrndlog_apache($;$) {
+# Create a random Apache access log file
+sub make_apache_log_file($;$) {
     local ($_, %_);
-    my ($file, $month, @logs, $content, @monrng, %months, $vardump, $tz);
+    my ($file, $month, @logs, $content, @ranges, %months, $var_dump, $tz);
     ($file, $month) = @_;
-    
+
     @logs = qw();
-    
+
     # Time zone
     $tz = (-12 + (int rand 53) / 2) * 3600;
     # To be removed
     #$tz = -12 + (int rand 53) / 2;
     #$tz = sprintf "%+05d", int($tz) * 100 + ($tz - int($tz)) * 60;
-    
+
     # Get the range of a month
     if (defined $month) {
-        @monrng = monrng_one $month;
+        @ranges = month_range $month;
     # Get the range of some previous months
     } else {
-        @monrng = monrng_rand;
+        @ranges = random_month_ranges;
     }
-    for (my $i = 0; $i + 1 < @monrng; $i++) {
+    for (my $i = 0; $i + 1 < @ranges; $i++) {
         my $hosts;
         # 2-5 hosts
         $hosts = 2 + int rand 4;
         # Generate the visit time of each host
         for (my $j = 0; $j < $hosts; $j++) {
-            my ($host, $t, $user, $htver, @hlogs, $hlogs);
+            my ($host, $t, $user, $http_ver, @host_logs, $count);
             # Host type: 1: IP, 0: domain name
-            $host = int rand 2? randip: randdomain;
-            $t = $monrng[$i] + int rand($monrng[$i + 1] - $monrng[$i]);
-            $user = (0, 0, 1)[int rand 3]? "-": randword;
-            $htver = (qw(HTTP/1.1 HTTP/1.1 HTTP/1.1 HTTP/1.0))[int rand 4];
+            $host = int rand 2? random_ip: random_domain;
+            $t = $ranges[$i] + int rand($ranges[$i + 1] - $ranges[$i]);
+            $user = (0, 0, 1)[int rand 3]? "-": random_word;
+            $http_ver = (qw(HTTP/1.1 HTTP/1.1 HTTP/1.1 HTTP/1.0))[int rand 4];
             # 3-5 log records for each host
-            $hlogs = 3 + int rand 3;
-            @hlogs = qw();
-            while (@hlogs < $hlogs) {
-                my ($ttxt, $method, $url, $dirs, @dirs, $type, $status, $size);
+            $count = 3 + int rand 3;
+            @host_logs = qw();
+            while (@host_logs < $count) {
+                my ($time, $method, $url, $dirs, @dirs, $type, $status, $size);
                 # Time text
                 @_ = gmtime($t + $tz);
                 $_[5] += 1900;
                 $_[4] = (qw(Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec))[$_[4]];
-                $ttxt = sprintf "%02d/%s/%04d:%02d:%02d:%02d %+05d",
+                $time = sprintf "%02d/%s/%04d:%02d:%02d:%02d %+05d",
                     @_[3,4,5,2,1,0],
                     int($tz / 3600) * 100 + ($tz - int($tz / 3600) * 3600) / 60;
-                
+
                 $method = (qw(GET GET GET HEAD POST))[int rand 5];
-                
+
                 # Generate a random URL
                 # 0-3 levels of directories
                 $dirs = int rand 4;
                 @dirs = qw();
-                push @dirs, "/" . randword while @dirs < $dirs;
+                push @dirs, "/" . random_word while @dirs < $dirs;
                 $type = ("", qw(html html txt css png jpg))[int rand 7];
                 if ($type eq "") {
                     $url = join("", @dirs) . "/";
                 } else {
-                    $url = join("", @dirs) . "/" . randword . ".$type";
+                    $url = join("", @dirs) . "/" . random_word . ".$type";
                 }
-                
+
                 $status = (200, 200, 200, 200, 304, 400, 403, 404)[int rand 8];
                 if ($status == 304) {
                     $size = 0;
                 } else {
                     $size = 200 + int rand 35000;
                 }
-                push @hlogs, {
+                push @host_logs, {
                         "time"      => $t,
                         "record"    => sprintf("%s - %s [%s] \"%s %s %s\" %d %d\n",
-                            $host, $user, $ttxt,
-                            $method, $url, $htver, $status, $size),
+                            $host, $user, $time,
+                            $method, $url, $http_ver, $status, $size),
                     };
-                
+
                 # 0-2 seconds later
                 $t += int rand 3;
             }
-            push @logs, @hlogs;
+            push @logs, @host_logs;
             # 0-5 seconds later
             $t += int rand 6;
         }
     }
-    
+
     # Sort by time
     # A series of requests from a same host may run cross the next host
     # So we need to sort again
     @logs = sort { $$a{"time"} <=> $$b{"time"} } @logs;
-    
+
     # Variables used, for failure investigation
-    $vardump = Data::Dumper->Dump([\@logs, $tz], [qw($logs $tz)]);
-    
+    $var_dump = Data::Dumper->Dump([\@logs, $tz], [qw($logs $tz)]);
+
     # Split by months
     %months = split_months @logs;
     # Drop the time and keep the records
     @logs = map $$_{"record"}, @logs;
     # Insert 1-2 malformed lines
     insert_malformed @logs;
-    
+
     # Compose the content
     $content = join "", @logs;
     # Output the file
-    fwrite($file, $content);
+    write_file($file, $content);
     # Return the content
-    return $content, $vardump, %months;
+    return $content, $var_dump, %months;
 }
 
-# mkrndlog_syslog: Create a random Syslog log file
-sub mkrndlog_syslog($;$) {
+# Create a random Syslog log file
+sub make_syslog_log_file($;$) {
     local ($_, %_);
-    my ($file, $month, @logs, $content, @monrng, %months, $vardump);
+    my ($file, $month, @logs, $content, @ranges, %months, $var_dump);
     my (@hosts, $hosts);
     ($file, $month) = @_;
-    
+
     @logs = qw();
-    
+
     # 3-5 hosts
     $hosts = 3 + int rand 3;
     @hosts = qw();
-    push @hosts, randword while @hosts < $hosts;
-    
+    push @hosts, random_word while @hosts < $hosts;
+
     # Get the range of a month
     if (defined $month) {
-        @monrng = monrng_one $month;
+        @ranges = month_range $month;
     # Get the range of some previous months
     } else {
-        @monrng = monrng_rand;
+        @ranges = random_month_ranges;
     }
-    for (my $i = 0; $i + 1 < @monrng; $i++) {
-        my (@mlogs, $mlogs, @t);
+    for (my $i = 0; $i + 1 < @ranges; $i++) {
+        my (@month_logs, $count, @t);
         # 5-12 log records for each month
-        $mlogs = 5 + int rand 8;
-        @mlogs = qw();
+        $count = 5 + int rand 8;
+        @month_logs = qw();
         # Generate the time of each record
         @t = qw();
-        push @t, $monrng[$i] + int rand($monrng[$i + 1] - $monrng[$i])
-            while @t < $mlogs;
+        push @t, $ranges[$i] + int rand($ranges[$i + 1] - $ranges[$i])
+            while @t < $count;
         foreach my $t (sort @t) {
-            my ($ttxt, $host, $app, $pid, $msg);
+            my ($time, $host, $app, $pid, $msg);
             # Time text
             @_ = localtime $t;
             $_[5] += 1900;
             $_[4] = (qw(Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec))[$_[4]];
-            $ttxt = sprintf "%s %2d %02d:%02d:%02d", @_[4,3,2,1,0];
+            $time = sprintf "%s %2d %02d:%02d:%02d", @_[4,3,2,1,0];
             $host = $hosts[int rand scalar @hosts];
-            $app = (qw(kernel sendmail sshd su CRON), randword, randword)[int rand 5];
+            $app = (qw(kernel sendmail sshd su CRON), random_word, random_word)[int rand 5];
             # PID 2-65535 (PID 1 is init)
             $pid = 2 + int rand 65533;
             # 3-12 words for each message
             $_ = 3 + int rand 10;
             @_ = qw();
-            push @_, randword while @_ < $_;
+            push @_, random_word while @_ < $_;
             $msg = join " ", @_;
-            
-            push @mlogs, {
+
+            push @month_logs, {
                     "time"      => $t,
                     "record"    => sprintf("%s %s %s[%d] %s\n",
-                        $ttxt, $host, $app, $pid, $msg),
+                        $time, $host, $app, $pid, $msg),
                 };
         }
-        push @logs, @mlogs;
+        push @logs, @month_logs;
     }
-    
+
     # Variables used, for failure investigation
-    $vardump = Data::Dumper->Dump([\@logs], [qw($logs)]);
-    
+    $var_dump = Data::Dumper->Dump([\@logs], [qw($logs)]);
+
     # Split by months
     %months = split_months @logs;
     # Drop the time and keep the records
     @logs = map $$_{"record"}, @logs;
     # Insert 1-2 malformed lines
     insert_malformed @logs;
-    
+
     # Compose the content
     $content = join "", @logs;
     # Output the file
-    fwrite($file, $content);
+    write_file($file, $content);
     # Return the content
-    return $content, $vardump, %months;
+    return $content, $var_dump, %months;
 }
 
-# mkrndlog_ntp: Create a random NTP log file
-sub mkrndlog_ntp($;$) {
+# Create a random NTP log file
+sub make_ntp_log_file($;$) {
     local ($_, %_);
-    my ($file, $month, @logs, $content, @monrng, %months, $vardump);
+    my ($file, $month, @logs, $content, @ranges, %months, $var_dump);
     my ($pid, $peers, @peers, $refs, @refs);
     ($file, $month) = @_;
-    
+
     @logs = qw();
-    
+
     # PID 2-65535 (PID 1 is init)
     $pid = 2 + int rand 65533;
     # 3-5 peers
     $peers = 3 + int rand 3;
     @peers = qw();
-    push @peers, randip while @peers < $peers;
+    push @peers, random_ip while @peers < $peers;
     # 2-3 references
     $refs = 2 + int rand 2;
-    push @refs, randip while @refs < $refs;
-    
+    push @refs, random_ip while @refs < $refs;
+
     # Get the range of a month
     if (defined $month) {
-        @monrng = monrng_one $month;
+        @ranges = month_range $month;
     # Get the range of some previous months
     } else {
-        @monrng = monrng_rand;
+        @ranges = random_month_ranges;
     }
-    for (my $i = 0; $i + 1 < @monrng; $i++) {
-        my (@mlogs, $mlogs, @t);
+    for (my $i = 0; $i + 1 < @ranges; $i++) {
+        my (@month_logs, $count, @t);
         # 5-12 log records for each month
-        $mlogs = 5 + int rand 8;
-        @mlogs = qw();
+        $count = 5 + int rand 8;
+        @month_logs = qw();
         # Generate the time of each record
         @t = qw();
-        push @t, $monrng[$i] + int rand($monrng[$i + 1] - $monrng[$i])
-            while @t < $mlogs;
+        push @t, $ranges[$i] + int rand($ranges[$i + 1] - $ranges[$i])
+            while @t < $count;
         foreach my $t (sort @t) {
-            my ($ttxt, $type, $msg);
+            my ($time, $type, $msg);
             # Time text
             @_ = localtime $t;
             $_[5] += 1900;
             $_[4] = (qw(Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec))[$_[4]];
-            $ttxt = sprintf "%2d %s %02d:%02d:%02d", @_[3,4,2,1,0];
+            $time = sprintf "%2d %s %02d:%02d:%02d", @_[3,4,2,1,0];
             # PID change - chance 2.73%, 50% change to total 25 records
             $pid = 2 + int rand 65533
                 if rand() < 0.0273;
@@ -811,11 +816,11 @@ sub mkrndlog_ntp($;$) {
                 }
             # Type 1 - reference host
             } elsif ($type == 1) {
-                my ($refhost, $stratum);
-                $refhost = $refs[int rand @refs];
+                my ($ref_host, $stratum);
+                $ref_host = $refs[int rand @refs];
                 # Stratum 2-4
                 $stratum = 2 + int rand 2;
-                $msg = "synchronized to $refhost, stratum $stratum";
+                $msg = "synchronized to $ref_host, stratum $stratum";
             # Type 2 - clock set
             } elsif ($type == 2) {
                 my ($off, $freq, $err, $poll);
@@ -827,113 +832,113 @@ sub mkrndlog_ntp($;$) {
                 $msg = sprintf "offset %8.6f sec freq %6.3f ppm error %8.6f poll %d",
                     $off, $freq, $err, $poll;
             }
-            
-            push @mlogs, {
+
+            push @month_logs, {
                     "time"      => $t,
                     "record"    => sprintf("%s ntpd[%d] %s\n",
-                        $ttxt, $pid, $msg),
+                        $time, $pid, $msg),
                 };
         }
-        push @logs, @mlogs;
+        push @logs, @month_logs;
     }
-    
+
     # Variables used, for failure investigation
-    $vardump = Data::Dumper->Dump([\@logs], [qw($logs)]);
-    
+    $var_dump = Data::Dumper->Dump([\@logs], [qw($logs)]);
+
     # Split by months
     %months = split_months @logs;
     # Drop the time and keep the records
     @logs = map $$_{"record"}, @logs;
     # Insert 1-2 malformed lines
     insert_malformed @logs;
-    
+
     # Compose the content
     $content = join "", @logs;
     # Output the file
-    fwrite($file, $content);
+    write_file($file, $content);
     # Return the content
-    return $content, $vardump, %months;
+    return $content, $var_dump, %months;
 }
 
-# mkrndlog_apachessl: Create a random Apache SSL engine log file
-sub mkrndlog_apachessl($;$) {
+# Create a random Apache SSL engine log file
+sub make_apache_ssl_log_file($;$) {
     local ($_, %_);
-    my ($file, $month, @logs, $content, @monrng, %months, $vardump);
+    my ($file, $month, @logs, $content, @ranges, %months, $var_dump);
     my $host;
     ($file, $month) = @_;
-    
+
     @logs = qw();
-    
-    $host = randdomain;
-    
+
+    $host = random_domain;
+
     # Get the range of a month
     if (defined $month) {
-        @monrng = monrng_one $month;
+        @ranges = month_range $month;
     # Get the range of some previous months
     } else {
-        @monrng = monrng_rand;
+        @ranges = random_month_ranges;
     }
-    for (my $i = 0; $i + 1 < @monrng; $i++) {
-        my (@mlogs, $mlogs, @t);
+    for (my $i = 0; $i + 1 < @ranges; $i++) {
+        my (@month_logs, $count, @t);
         # 3-5 visitors for each month
-        $mlogs = 3 + int rand 3;
-        @mlogs = qw();
+        $count = 3 + int rand 3;
+        @month_logs = qw();
         # Generate the time of each record
         @t = qw();
-        push @t, $monrng[$i] + int rand($monrng[$i + 1] - $monrng[$i])
-            while @t < $mlogs;
+        push @t, $ranges[$i] + int rand($ranges[$i + 1] - $ranges[$i])
+            while @t < $count;
         foreach my $t (sort @t) {
-            my ($ttxt, $pid, $remote, $priority, $child, $msg);
+            my ($time, $pid, $remote, $priority, $child, $msg);
             # Time text
             @_ = localtime $t;
             $_[5] += 1900;
             $_[4] = (qw(Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec))[$_[4]];
-            $ttxt = sprintf "%02d/%s/%04d %02d:%02d:%02d", @_[3,4,5,2,1,0];
+            $time = sprintf "%02d/%s/%04d %02d:%02d:%02d", @_[3,4,5,2,1,0];
             # PID 2-65535 (PID 1 is init)
             $pid = 2 + int rand 65533;
             # Remote client
-            $remote = randip;
+            $remote = random_ip;
             # Child number
             $child = int rand 15;
-            
+
             # Error
             if (int rand 5 == 1) {
                 $priority = "error";
                 $msg = "SSL handshake failed (server $host:443, client $remote) (OpenSSL library error follows)";
-                push @mlogs, {
+                push @month_logs, {
                         "time"      => $t,
                         "record"    => sprintf("[%s %05d] [%s]  %s\n",
-                            $ttxt, $pid, $priority, $msg),
+                            $time, $pid, $priority, $msg),
                     };
                 $msg = "OpenSSL: error:1408E0F4:SSL routines:SSL3_GET_MESSAGE:unexpected message";
-                push @mlogs, {
+                push @month_logs, {
                         "time"      => $t,
                         "record"    => sprintf("[%s %05d] [%s]  %s\n",
-                            $ttxt, $pid, $priority, $msg),
+                            $time, $pid, $priority, $msg),
                     };
-            
+
             # Info
             } else {
                 $priority = "info";
                 $msg = "Connection to child $child established (server $host:443, client $remote)";
-                push @mlogs, {
+                push @month_logs, {
                         "time"      => $t,
                         "record"    => sprintf("[%s %05d] [%s]  %s\n",
-                            $ttxt, $pid, $priority, $msg),
+                            $time, $pid, $priority, $msg),
                     };
                 $msg = "Seeding PRNG with 1164 bytes of entropy";
-                push @mlogs, {
+                push @month_logs, {
                         "time"      => $t,
                         "record"    => sprintf("[%s %05d] [%s]  %s\n",
-                            $ttxt, $pid, $priority, $msg),
+                            $time, $pid, $priority, $msg),
                     };
                 # 1: bad
                 if (int rand 2) {
                     $msg = "Spurious SSL handshake interrupt[Hint: Usually just one of those OpenSSL confusions!?]";
-                    push @mlogs, {
+                    push @month_logs, {
                             "time"      => $t,
                             "record"    => sprintf("[%s %05d] [%s]  %s\n",
-                                $ttxt, $pid, $priority, $msg),
+                                $time, $pid, $priority, $msg),
                         };
                 # 2: success
                 } else {
@@ -946,117 +951,117 @@ sub mkrndlog_apachessl($;$) {
                         } else {
                             $msg = "Subsequent (No.$j) HTTPS request received for child $child ($host:443)"
                         }
-                        push @mlogs, {
+                        push @month_logs, {
                                 "time"      => $t,
                                 "record"    => sprintf("[%s %05d] [%s]  %s\n",
-                                    $ttxt, $pid, $priority, $msg),
+                                    $time, $pid, $priority, $msg),
                             };
                     }
                     $msg = "Connection to child $child closed with standard shutdown (server $host:443, client $remote)";
-                    push @mlogs, {
+                    push @month_logs, {
                             "time"      => $t,
                             "record"    => sprintf("[%s %05d] [%s]  %s\n",
-                                $ttxt, $pid, $priority, $msg),
+                                $time, $pid, $priority, $msg),
                         };
                 }
             }
         }
-        push @logs, @mlogs;
+        push @logs, @month_logs;
     }
-    
+
     # Variables used, for failure investigation
-    $vardump = Data::Dumper->Dump([\@logs], [qw($logs)]);
-    
+    $var_dump = Data::Dumper->Dump([\@logs], [qw($logs)]);
+
     # Split by months
     %months = split_months @logs;
     # Drop the time and keep the records
     @logs = map $$_{"record"}, @logs;
     # Insert 1-2 malformed lines
     insert_malformed @logs;
-    
+
     # Compose the content
     $content = join "", @logs;
     # Output the file
-    fwrite($file, $content);
+    write_file($file, $content);
     # Return the content
-    return $content, $vardump, %months;
+    return $content, $var_dump, %months;
 }
 
-# mkrndlog_modfiso: Create a random modified ISO 8861 date/time log file
-sub mkrndlog_modfiso($;$) {
+# Create a random modified ISO 8861 date/time log file
+sub make_modified_iso_log_file($;$) {
     local ($_, %_);
-    my ($file, $month, @logs, $content, @monrng, %months, $vardump, $tz);
+    my ($file, $month, @logs, $content, @ranges, %months, $var_dump, $tz);
     ($file, $month) = @_;
-    
+
     @logs = qw();
-    
+
     # Time zone
     $tz = (-12 + (int rand 53) / 2) * 3600;
     # To be removed
     #$tz = -12 + (int rand 53) / 2;
     #$tz = sprintf "%+05d", int($tz) * 100 + ($tz - int($tz)) * 60;
-    
+
     # Get the range of a month
     if (defined $month) {
-        @monrng = monrng_one $month;
+        @ranges = month_range $month;
     # Get the range of some previous months
     } else {
-        @monrng = monrng_rand;
+        @ranges = random_month_ranges;
     }
-    for (my $i = 0; $i + 1 < @monrng; $i++) {
-        my (@mlogs, $mlogs, @t);
+    for (my $i = 0; $i + 1 < @ranges; $i++) {
+        my (@month_logs, $count, @t);
         # 5-12 log records for each month
-        $mlogs = 3 + int rand 3;
-        @mlogs = qw();
+        $count = 3 + int rand 3;
+        @month_logs = qw();
         # Generate the time of each record
         @t = qw();
-        push @t, $monrng[$i] + int rand($monrng[$i + 1] - $monrng[$i])
-            while @t < $mlogs;
+        push @t, $ranges[$i] + int rand($ranges[$i + 1] - $ranges[$i])
+            while @t < $count;
         foreach my $t (sort @t) {
-            my ($ttxt, $id, $msg);
+            my ($time, $id, $msg);
             # Time text
             @_ = gmtime($t + $tz);
             $_[5] += 1900;
             $_[4]++;
-            $ttxt = sprintf "%04d-%02d-%02d %02d:%02d:%02d %+05d",
-                @_[5,4,3,2,1,0], 
+            $time = sprintf "%04d-%02d-%02d %02d:%02d:%02d %+05d",
+                @_[5,4,3,2,1,0],
                 int($tz / 3600) * 100 + ($tz - int($tz / 3600) * 3600) / 60;
             # identity
-            $id = randword;
+            $id = random_word;
             # 3-12 words for each message
             $_ = 3 + int rand 10;
             @_ = qw();
-            push @_, randword while @_ < $_;
+            push @_, random_word while @_ < $_;
             $msg = join " ", @_;
-            push @mlogs, {
+            push @month_logs, {
                     "time"      => $t,
                     "record"    => sprintf("[%s] %s: %s\n",
-                        $ttxt, $id, $msg),
+                        $time, $id, $msg),
                 };
         }
-        push @logs, @mlogs;
+        push @logs, @month_logs;
     }
-    
+
     # Variables used, for failure investigation
-    $vardump = Data::Dumper->Dump([\@logs, $tz], [qw($logs $tz)]);
-    
+    $var_dump = Data::Dumper->Dump([\@logs, $tz], [qw($logs $tz)]);
+
     # Split by months
     %months = split_months @logs;
     # Drop the time and keep the records
     @logs = map $$_{"record"}, @logs;
     # Insert 1-2 malformed lines
     insert_malformed @logs;
-    
+
     # Compose the content
     $content = join "", @logs;
     # Output the file
-    fwrite($file, $content);
+    write_file($file, $content);
     # Return the content
-    return $content, $vardump, %months;
+    return $content, $var_dump, %months;
 }
 
-# monrng_one: Get the range of a specific month
-sub monrng_one($) {
+# Get the range of a specific month
+sub month_range($) {
     local ($_, %_);
     my ($month, @range);
     $month = $_[0];
@@ -1078,8 +1083,8 @@ sub monrng_one($) {
     return @range;
 }
 
-# monrng_rand: Get the range of some previous months
-sub monrng_rand() {
+# Get the range of some previous months
+sub random_month_ranges() {
     local ($_, %_);
     my ($num, @range);
     # 1-3 previous months
@@ -1099,12 +1104,12 @@ sub monrng_rand() {
     return @range;
 }
 
-# split_months: Split the log records by months
+# Split the log records by months
 sub split_months(\@) {
     local ($_, %_);
     my ($logs, %months);
     $logs = $_[0];
-    
+
     %months = qw();
     foreach (@$logs) {
         my $month;
@@ -1113,62 +1118,66 @@ sub split_months(\@) {
         $months{$month} = "" if !exists $months{$month};
         $months{$month} .= $$_{"record"};
     }
-    
+
     return %months;
 }
 
-# insert_malformed: Insert 1-2 malformed lines
+# Insert 1-2 malformed lines
 sub insert_malformed(\@) {
     local ($_, %_);
     my ($logs, $malformed);
     $logs = $_[0];
-    
+
     $malformed = 1 + int rand 2;
     while ($malformed > 0) {
         my $line;
         # Generate the random malformed line
         $_ = 3 + int rand 5;
         @_ = qw();
-        push @_, randword while @_ < $_;
+        push @_, random_word while @_ < $_;
         $line = join(" ", @_) . ".\n";
         $line =~ s/^(.)/uc $1/e;
         # The position to insert the line
         # The position cannot be 0 - or we cannot judge the log format
-        $_ = 1 + int rand(@$logs - 1); 
+        $_ = 1 + int rand(@$logs - 1);
         $logs = [@$logs[0...$_], $line, @$logs[$_+1...$#$logs]];
         $malformed--;
     }
-    
+
     return;
 }
 
-# randword: Supply a random English word
-sub randword() {
+# Supply a random English word
+sub random_word() {
     local ($_, %_);
     @_ = qw(
-culminates spector thule tamil sages fasten bothers intricately librarian
-mist criminate impressive scissor trance standardizing enabler athenians
-planers decisions salvation wetness fibers cowardly winning call stockton
-bifocal rapacious steak reinserts overhaul glaringly playwrights wagoner
-garland hampered effie messy despaired orthodoxy bacterial bernardine driving
-danization vapors uproar sects litmus sutton lacrosse);
+hard-to-find striped poor scene miniature marble error shelter clear settle
+march breath tested symptomatic delicate road punish grain fabulous camp
+authority love system placid bake maddening sleep precious crabby lovely jolly
+wrist park common volleyball tick judicious degree alluring hydrant oatmeal
+aboard light spare delirious unwritten unnatural existence deadpan cagey
+disastrous station fear dam adorable grape event silent extra-large shame meaty
+husky drag religion extra-small pot valuable deceive obese seed history
+wholesale tremble delightful leather cabbage death tub loss twig hate noxious
+trashy sleet bleach quizzical familiar nappy teaching private yak turkey foolish
+concentrate reject tacit goofy men ajar communicate);
     return $_[int rand @_];
 }
 
-# randip: Supply a random IP
-sub randip() {
+# Supply a random IP
+sub random_ip() {
     return join ".", (int rand 255, int rand 255,
         int rand 255, 1 + int rand 254);
 }
 
-# randdomain: Supply a random domain
-sub randdomain() {
+# Supply a random domain
+sub random_domain() {
     local ($_, %_);
     # Generate a random domain name
     # 3-5 levels, end with net or com
     $_ = 2 + int rand 3;
     @_ = qw();
-    push @_, randword while @_ < $_;
+    push @_, random_word while @_ < $_;
     push @_, (qw(net com))[int rand 2];
     return join ".", @_;
 }

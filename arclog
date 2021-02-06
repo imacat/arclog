@@ -54,7 +54,7 @@ sub rel2abs($;$);
 our ($THIS_FILE, $VERBOSE);
 our ($VERSION);
 $THIS_FILE = basename($0);
-$VERSION = "3.04";
+$VERSION = "3.05";
 $VERBOSE = 1;
 
 our (%CONF, @LOGFILES, $THIS_MONTH, $PROGRESS_BAR);

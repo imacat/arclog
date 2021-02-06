@@ -1,6 +1,6 @@
 arclog change log
 
-2020-02-06
+2020-02-06	version 3.05
 	 1. Replaced the messy GNU-styled, multi-lingual documents with a
 	    single Markdown README.md.
 	 2. Added the GitHub repository to the document, and removed the

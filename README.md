@@ -589,6 +589,19 @@ The `arclog` project is hosted on GitHub.  Address your issues on the
 GitHub issue tracker https://github.com/imacat/arclog/issues.
 
 
+Thanks
+------
+
+* Thanks to [Chen-hsiu Huang] for reporting the bug that
+  `$WORKING_RES` was not locked when opened.
+
+* Thanks to [SourceForge] for providing compiling farm for projects
+  to test on different platforms.
+
+[Chen-hsiu Huang]: mailto:chenhsiu@gens.dhs.org
+[SourceForge]: https://sf.net
+
+
 License
 -------
 

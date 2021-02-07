@@ -1,6 +1,7 @@
 .idea
 blib
 Makefile
+Makefile.old
 Build
 _build
 MANIFEST

@@ -5,6 +5,7 @@ MYMETA.yml
 MYMETA.json
 pm_to_blib
 Build
+Build.bat
 _build/
 MANIFEST
 MANIFEST.bak

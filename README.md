@@ -99,11 +99,13 @@ System Requirement
 1. Perl, version 5.8.0 or above.  `arclog` uses 3-argument open() to
    duplicate file handles, which is only supported since 5.8.0.  I
    have not successfully port this onto earlier versions yet.  Please
-   tell me if you made it.  You can run `perl -v` to see your current
-   Perl version.  If you do not have Perl, or if you have an older
-   version of Perl, you can download and install/upgrade it from the
-   [Perl website].  If you are using MS-Windows, you can download and
-   install [ActiveState ActivePerl].
+   tell me if you made it.
+
+   You can run `perl -v` to check your current Perl version.  If you
+   do not have Perl, or if you have an older version of Perl, you can
+   download and install/upgrade it from the [Perl website].  For
+   MS-Windows, you can download and install [Strawberry Perl] or
+   [ActivePerl].
 
 2. Required Perl modules:
 
@@ -275,7 +277,8 @@ System Requirement
          ppm install TermReadKey
 
 [Perl website]: https://www.perl.org
-[ActiveState ActivePerl]: https://www.activestate.com
+[Strawberry Perl]: https://strawberryperl.com
+[ActivePerl]: https://www.activestate.com/products/perl/
 [Date::Parse]: https://metacpan.org/release/TimeDate
 [File::MMagic]: https://metacpan.org/release/File-MMagic
 [GnuWin32]: http://gnuwin32.sourceforge.net
@@ -320,20 +323,14 @@ read the upgrade instruction later in this document.
 
 ### Install with [ExtUtils::MakeMaker]
 
-`arclog` uses standard Perl installation with ExtUtils::MakeMaker.
-Follow these steps:
-
     % perl Makefile.PL
     % make
     % make test
     % make install
 
 When running `make install`, make sure you have the privilege to
-write to the installation location.  This usually requires the `root`
+write to the installation locations.  This usually requires the `root`
 privilege.
-
-If you are using ActivePerl under MS-Windows, you should use `nmake`
-instead of `make`.  [nmake can be obtained from the Microsoft FTP site.]
 
 If you want to install into another location, you can set the
 `PREFIX`.  For example, to install into your home when you are not
@@ -344,10 +341,12 @@ If you want to install into another location, you can set the
 Refer to the documentation of ExtUtils::MakeMaker for more
 installation options (by running `perldoc ExtUtils::MakeMaker`).
 
-### Install with [Module::Build]
+For MS-Windows, since `make` is not universally available,
+Module::Build is preferred to ExtUtils::MakeMaker.  See the
+instructions below.
 
-You can install with Module::Build instead, if you prefer.  Follow
-these steps:
+
+### Install with [Module::Build]
 
     % perl Build.PL
     % ./Build
@@ -355,7 +354,7 @@ these steps:
     % ./Build install
 
 When running `./Build install`, make sure you have the privilege to
-write to the installation location.  This usually requires the `root`
+write to the installation locations.  This usually requires the `root`
 privilege.
 
 If you want to install into another location, you can set the
@@ -368,7 +367,6 @@ Refer to the documentation of Module::Build for more installation
 options (by running `perldoc Module::Build`).
 
 [ExtUtils::MakeMaker]: https://metacpan.org/release/ExtUtils-MakeMaker
-[nmake can be obtained from the Microsoft FTP site.]: ftp://ftp.microsoft.com/Softlib/MSLFILES/nmake15.exe
 [Module::Build]: https://metacpan.org/release/Module-Build
 
 

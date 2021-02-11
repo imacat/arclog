@@ -180,9 +180,10 @@ System Requirement
      files.  It is only needed when gzip compressed files are
      encountered.  If it is not available, `arclog` tries the `gzip`
      executable instead.  If that is not available, too, `arclog`
-     fails.  Compress::Zlib comes with Perl since version 5.9.3.  If
-     not, you can download and install it from the CPAN archive, or
-     install it with the CPAN shell:
+     fails.  You should not worry about Compress::Zlib since it comes
+     with Perl since version 5.9.3.  If not, it is contained in the
+     [IO-Compress] distribution.  You can download and install it from
+     the CPAN archive, or install it with the CPAN shell:
 
          cpan Compress::Zlib
 
@@ -285,6 +286,7 @@ System Requirement
 [GnuWin32]: http://gnuwin32.sourceforge.net
 [Compress::Zlib]: https://metacpan.org/pod/Compress::Zlib
 [the gzip website]: https://www.gzip.org
+[IO-Compress]: https://metacpan.org/release/IO-Compress
 [Compress::Bzip2]: https://metacpan.org/pod/Compress::Bzip2
 [the bzip2 website]: http://www.bzip.org
 [Term::ReadKey]: https://metacpan.org/pod/Term::ReadKey

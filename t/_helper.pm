@@ -1,6 +1,6 @@
 # _helper.pm - A simple test suite helper
 
-# Copyright (c) 2007-2021 imacat.
+# Copyright (c) 2007-2022 imacat.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -24,12 +24,12 @@ $VERSION = "0.01";
 @EXPORT = qw(
     read_file read_raw_file write_file write_raw_file
     run_cmd where_is file_type list_files preserve_source clean_up
-    has_no_file has_no_gzip has_no_bzip2
+    has_no_file has_no_gzip has_no_bzip2 has_no_xz
     make_log_file
     make_apache_log_file make_syslog_log_file
     make_ntp_log_file make_apache_ssl_log_file make_modified_iso_log_file
     random_word
-    TYPE_TEXT TYPE_GZIP TYPE_BZIP2
+    TYPE_TEXT TYPE_GZIP TYPE_BZIP2 TYPE_XZ
     @LOG_FORMATS @SOURCE_TYPES @RESULT_TYPES @KEEP_MODES @OVERRIDE_MODES);
 # Prototype declaration
 sub this_file();
@@ -46,6 +46,7 @@ sub clean_up($$$);
 sub has_no_file();
 sub has_no_gzip();
 sub has_no_bzip2();
+sub has_no_xz();
 sub make_log_file($$$@);
 sub make_apache_log_file($;$);
 sub make_syslog_log_file($;$);
@@ -71,15 +72,17 @@ use File::Temp qw(tempfile);
 use Time::Local qw(timelocal);
 $Data::Dumper::Indent = 1;
 
-our (%WHERE_IS, $HAS_NO_FILE, $HAS_NO_GZIP, $HAS_NO_BZIP2);
+our (%WHERE_IS, $HAS_NO_FILE, $HAS_NO_GZIP, $HAS_NO_BZIP2, $HAS_NO_XZ);
 %WHERE_IS = qw();
 undef $HAS_NO_FILE;
 undef $HAS_NO_GZIP;
 undef $HAS_NO_BZIP2;
+undef $HAS_NO_XZ;
 
 use constant TYPE_TEXT => "text/plain";
 use constant TYPE_GZIP => "application/x-gzip";
 use constant TYPE_BZIP2 => "application/x-bzip2";
+use constant TYPE_XZ => "application/x-xz";
 
 our (@LOG_FORMATS, @SOURCE_TYPES, @RESULT_TYPES, @KEEP_MODES, @OVERRIDE_MODES);
 # All the log format information
@@ -107,7 +110,11 @@ our (@LOG_FORMATS, @SOURCE_TYPES, @RESULT_TYPES, @KEEP_MODES, @OVERRIDE_MODES);
     {   "title" => "bzip2 source",
         "type"  => TYPE_BZIP2,
         "suf"   => ".bz2",
-        "skip"  => has_no_bzip2, }, );
+        "skip"  => has_no_bzip2, },
+    {   "title" => "xz source",
+        "type"  => TYPE_XZ,
+        "suf"   => ".xz",
+        "skip"  => has_no_xz, }, );
 # All the result type information
 @RESULT_TYPES = (
     {   "title" => "default compress",
@@ -125,6 +132,11 @@ our (@LOG_FORMATS, @SOURCE_TYPES, @RESULT_TYPES, @KEEP_MODES, @OVERRIDE_MODES);
         "suf"   => ".bz2",
         "skip"  => has_no_bzip2,
         "opts"  => [qw(-c b)], },
+    {   "title" => "xz compress",
+        "type"  => TYPE_XZ,
+        "suf"   => ".xz",
+        "skip"  => has_no_xz,
+        "opts"  => [qw(-c x)], },
     {   "title" => "no compress",
         "type"  => TYPE_TEXT,
         "suf"   => "",
@@ -275,6 +287,36 @@ sub read_file($) {
             return $content;
         }
 
+    # an xz compressed file
+    } elsif ($file =~ /\.xz/) {
+        # IO::Uncompress::UnXz
+        if (eval { require IO::Uncompress::UnXz; 1; }) {
+            my ($FH, $xz);
+            $content = "";
+            open $FH, $file             or die this_file . ": $file: $!";
+
+            $xz = IO::Uncompress::UnXz->new($FH)
+                                        or die this_file . ": $file: $IO::Uncompress::UnXz::UnXzError";
+            while (1) {
+                ($xz->read($_, 10240) != -1)
+                                        or die this_file . ": $file: $IO::Uncompress::UnXz::UnXzError";
+                $content .= $_;
+                last if length $_ < 10240;
+            }
+            $xz->close                  or die this_file . ": $file: $IO::Uncompress::UnXz::UnXzError";
+            return $content;
+
+        # xz executable
+        } else {
+            my ($PH, $CMD);
+            $CMD = where_is "xz";
+            $CMD = "xz -cd \"$file\"";
+            open $PH, "$CMD |"          or die this_file . ": $CMD: $!";
+            $content = join "", <$PH>;
+            close $PH                   or die this_file . ": $CMD: $!";
+            return $content;
+        }
+
     # a plain text file
     } else {
         my $FH;
@@ -353,6 +395,30 @@ sub write_file($$) {
         } else {
             my ($PH, $CMD);
             $CMD = where_is "bzip2";
+            $CMD = "\"$CMD\" -9f > \"$file\"";
+            open $PH, "| $CMD"        or die this_file . ": $CMD: $!";
+            print $PH $content        or die this_file . ": $CMD: $!";
+            close $PH                 or die this_file . ": $CMD: $!";
+            return;
+        }
+
+    # an xz compressed file
+    } elsif ($file =~ /\.xz/) {
+        # IO::Compress::Xz
+        if (eval { require IO::Compress::Xz; 1; }) {
+            my ($FH, $xz);
+            open $FH, ">$file"          or die this_file . ": $file: $!";
+            $xz = IO::Compress::Xz->new($FH)
+                                        or die this_file . ": $file: $IO::Compress::Xz::XzError";
+            ($xz->write($content, length $content) == length $content)
+                                        or die this_file . ": $file: $IO::Compress::Xz::XzError";
+            $xz->close                  or die this_file . ": $file: $IO::Compress::Xz::XzError";
+            return;
+
+        # xz executable
+        } else {
+            my ($PH, $CMD);
+            $CMD = where_is "xz";
             $CMD = "\"$CMD\" -9f > \"$file\"";
             open $PH, "| $CMD"        or die this_file . ": $CMD: $!";
             print $PH $content        or die this_file . ": $CMD: $!";
@@ -452,6 +518,7 @@ sub file_type($) {
         $_ = File::MMagic->new->checktype_filename($file);
         return "application/x-gzip" if /gzip/;
         return "application/x-bzip2" if /bzip2/;
+        return "application/x-xz" if /xz/;
         # All else are text/plain
         return "text/plain";
     }
@@ -460,6 +527,7 @@ sub file_type($) {
         $_ = join "", `"$_" "$file"`;
         return "application/x-gzip" if /gzip/;
         return "application/x-bzip2" if /bzip2/;
+        return "application/x-xz" if /: XZ/;
         # All else are text/plain
         return "text/plain";
     }
@@ -547,6 +615,15 @@ sub has_no_bzip2() {
             0: "Compress::Bzip2 v2 or bzip2 executable not available"
         if !defined $HAS_NO_BZIP2;
     return $HAS_NO_BZIP2;
+}
+
+# If we have xz support somewhere
+sub has_no_xz() {
+    $HAS_NO_XZ = eval { require IO::Compress::Xz; require IO::Uncompress::UnXz; 1; }
+                || defined where_is "xz"?
+            0: "IO::Compress::Xz or xz executable not available"
+        if !defined $HAS_NO_XZ;
+    return $HAS_NO_XZ;
 }
 
 # Create a random existing log file

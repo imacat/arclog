@@ -12,9 +12,9 @@ space and prevents potential attacks on log files.
 
 Currently, `arclog` supports [Apache] access log, Syslog, [NTP],
 Apache 1 SSL engine log, and my own bracketed, modified ISO date/time
-log file formats, and gzip and bzip2 compression methods.  Several
-software projects log (or can log) in a format compatible with the
-Apache access log, like [CUPS], [ProFTPD], [Pure-FTPd]… etc., and
+log file formats, and gzip, bzip2, and xz compression methods.
+Several software projects log (or can log) in a format compatible with
+the Apache access log, like [CUPS], [ProFTPD], [Pure-FTPd]… etc., and
 `arclog` can archive their Apache-like log files, too.
 
 Caution
@@ -84,10 +84,10 @@ Caution
 * I suggest that you install [File::MMagic] instead of counting on the
   `file` executable.  The internal magic file of File::MMagic works
   better than the `file` executable.  `arclog` treats everything not
-  gzip nor bzip2 compressed as plain text.  When a compressed log file
-  is wrongly recognized as an image, `arclog` treats it as plain text,
-  reads directly from it, and fails.  This does not hurt the source
-  log files, but is still annoying.
+  gzip, bzip2, or xz compressed as plain text.  When a compressed log 
+  file is wrongly recognized as an image, `arclog` treats it as plain
+  text, reads directly from it, and fails.  This does not hurt the
+  source log files, but is still annoying.
 
 [Date::Parse]: https://metacpan.org/release/TimeDate
 [File::MMagic]: https://metacpan.org/release/File-MMagic
@@ -248,6 +248,42 @@ System Requirement
      [the bzip2 website].  Be sure to save it as `bzip2.exe` somewhere
      in your `PATH`.
 
+   * [IO::Compress::Xz] and [IO::Uncompress::UnXz]
+
+     They are used to support reading/writing the xz compressed
+     files.  It is only needed when xz compressed files are
+     encountered.  If it is not available, `arclog` tries the `xz`
+     executable instead.  If that is not available, too, `arclog`
+     fails.  They are contained in the [IO-Compress-Lzma] distribution.
+     You can download and install it from the CPAN archive, or install
+     them with the CPAN shell:
+
+         cpan IO::Compress::Xz
+
+     or with the CPANPLUS shell:
+
+         cpanp i IO::Compress::Xz
+
+     For Debian/Ubuntu:
+
+         sudo apt install libio-compress-lzma-perl
+
+     For Red Hat/Fedora/CentOS:
+
+         sudo yum install perl-IO-Compress-Lzma
+
+     For FreeBSD:
+
+         ports install p5-IO-Compress-Lzma
+
+     For ActivePerl:
+
+         ppm install IO-Compress-Lzma
+
+     The alternative `xz.exe` for MS-Windows can be obtained from
+     [the XZ Utils website].  Be sure to save it as `xz.exe`
+     somewhere in your `PATH`.
+
    * [Term::ReadKey]
 
      This is used to display the progress bar.  The progress bar is a
@@ -286,9 +322,13 @@ System Requirement
 [GnuWin32]: http://gnuwin32.sourceforge.net
 [Compress::Zlib]: https://metacpan.org/pod/Compress::Zlib
 [the gzip website]: https://www.gzip.org
-[IO-Compress]: https://metacpan.org/release/IO-Compress
+[IO-Compress]: https://metacpan.org/dist/IO-Compress
 [Compress::Bzip2]: https://metacpan.org/pod/Compress::Bzip2
 [the bzip2 website]: http://www.bzip.org
+[IO::Compress::Xz]: https://metacpan.org/pod/IO::Compress::Xz
+[IO::Uncompress::UnXz]: https://metacpan.org/pod/IO::Uncompress::UnXz
+[IO-Compress-Lzma]: https://metacpan.org/dist/IO-Compress-Lzma
+[the XZ Utils website]: https://tukaani.org/xz/
 [Term::ReadKey]: https://metacpan.org/pod/Term::ReadKey
 
 
@@ -430,8 +470,8 @@ Options
 * `logfile`
 
   The log file to be archived.  Specify `-` to read from `STDIN`.
-  You can specify multiple log files.  `gzip` or `bzip2` compressed
-  files are supported.
+  You can specify multiple log files.  `gzip`, `bzip2`, or `xz`
+  compressed files are supported.
 
 * `output`
 
@@ -463,6 +503,14 @@ Options
     compress instead of calling `bzip2`.  This can be safer and faster
     for not calling foreign binaries.  If `Compress::Bzip2` is not
     installed, it tries `bzip2` instead.  If `bzip2` is not available,
+    either, it fails.
+
+  * `x`, `xz`
+
+    Compress with `xz`.  `arclog` can use `IO::Compress::Xz` to
+    compress instead of calling `xz`.  This can be safer and faster
+    for not calling foreign binaries.  If `IO::Compress::Xz` is not
+    installed, it tries `xz` instead.  If `xz` is not available,
     either, it fails.
 
   * `n`, `none`

@@ -1,7 +1,7 @@
 #! /usr/bin/perl -w
 # Test the errors that should be captured.
 
-# Copyright (c) 2007-2021 imacat.
+# Copyright (c) 2007-2022 imacat.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -140,13 +140,15 @@ $_ = eval {
     $title = join ",", "A same log file is specified more than once",
         $$fmt{"title"}, $$rt{"title"};
     # (2-4 times available compression) log files
-    $_ = 2 + (has_no_gzip? 0: 2) + (has_no_bzip2? 0: 2);
+    $_ = 2 + (has_no_gzip? 0: 2) + (has_no_bzip2? 0: 2)
+        + (has_no_xz? 0: 2);
     $num = $_ + int rand $_;
     my %types = qw();
     # At least 2 files for each available compression
     foreach my $st (@SOURCE_TYPES) {
         next if ($$st{"type"} eq TYPE_GZIP && has_no_gzip)
-                || ($$st{"type"} eq TYPE_BZIP2 && has_no_bzip2);
+                || ($$st{"type"} eq TYPE_BZIP2 && has_no_bzip2)
+                || ($$st{"type"} eq TYPE_XZ && has_no_xz);
         @_ = grep !exists $types{$_}, (0...$num-1);
         $types{$_[int rand @_]} = $st;
         @_ = grep !exists $types{$_}, (0...$num-1);
@@ -157,7 +159,8 @@ $_ = eval {
         do {
             $types{$_} = $SOURCE_TYPES[int rand @SOURCE_TYPES];
         } until !(${$types{$_}}{"type"} eq TYPE_GZIP && has_no_gzip)
-                && !(${$types{$_}}{"type"} eq TYPE_BZIP2 && has_no_bzip2);
+                && !(${$types{$_}}{"type"} eq TYPE_BZIP2 && has_no_bzip2)
+                && !(${$types{$_}}{"type"} eq TYPE_XZ && has_no_xz);
     }
     @st = map $types{$_}, (0...$num-1);
     @fs = qw();

@@ -1,5 +1,8 @@
 arclog change log
 
+2022-03-19
+	 Added support for the xz compression.
+
 2020-02-06	version 3.05
 	 1. Replaced the messy GNU-styled, multi-lingual documents with a
 	    single Markdown README.md.

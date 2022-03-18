@@ -1,7 +1,7 @@
 #! /usr/bin/perl -w
 # Test archiving several log files at once
 
-# Copyright (c) 2007-2021 imacat.
+# Copyright (c) 2007-2022 imacat.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@ use warnings;
 use diagnostics;
 use Test;
 
-BEGIN { plan tests => 16 }
+BEGIN { plan tests => 25 }
 
 use File::Basename qw(basename);
 use File::Path qw(mkpath rmtree);
@@ -35,14 +35,15 @@ $WORKDIR = catdir($FindBin::Bin, "logs");
 $arclog = catfile($FindBin::Bin, updir, "blib", "script", "arclog");
 $tno = 0;
 
-# 1-16: Archiving several log files at once
+# 1-25: Archiving several log files at once
 foreach my $rt (@RESULT_TYPES) {
     my $skip;
     $skip = 0;
     # 1: Source log files listed as the arguments
     $_ = eval {
         if (    ($$rt{"type"} eq TYPE_GZIP && has_no_gzip)
-                || ($$rt{"type"} eq TYPE_BZIP2 && has_no_bzip2)) {
+                || ($$rt{"type"} eq TYPE_BZIP2 && has_no_bzip2)
+                || ($$rt{"type"} eq TYPE_XZ && has_no_xz)) {
             $skip = 1;
             return;
         }
@@ -56,13 +57,15 @@ foreach my $rt (@RESULT_TYPES) {
         $title = join ", ", "several log files", "all listed as arguments",
             $$fmt{"title"}, $$rt{"title"};
         # (2-4 times available compression) log files
-        $_ = 2 + (has_no_gzip? 0: 2) + (has_no_bzip2? 0: 2);
+        $_ = 2 + (has_no_gzip? 0: 2) + (has_no_bzip2? 0: 2)
+            + (has_no_xz? 0: 2);
         $num = $_ + int rand $_;
         my %types = qw();
         # At least 2 files for each available compression
         foreach my $st (@SOURCE_TYPES) {
             next if ($$st{"type"} eq TYPE_GZIP && has_no_gzip)
-                    || ($$st{"type"} eq TYPE_BZIP2 && has_no_bzip2);
+                    || ($$st{"type"} eq TYPE_BZIP2 && has_no_bzip2)
+                    || ($$st{"type"} eq TYPE_XZ && has_no_xz);
             @_ = grep !exists $types{$_}, (0...$num-1);
             $types{$_[int rand @_]} = $st;
             @_ = grep !exists $types{$_}, (0...$num-1);
@@ -73,7 +76,8 @@ foreach my $rt (@RESULT_TYPES) {
             do {
                 $types{$_} = $SOURCE_TYPES[int rand @SOURCE_TYPES];
             } until !(${$types{$_}}{"type"} eq TYPE_GZIP && has_no_gzip)
-                    && !(${$types{$_}}{"type"} eq TYPE_BZIP2 && has_no_bzip2);
+                    && !(${$types{$_}}{"type"} eq TYPE_BZIP2 && has_no_bzip2)
+                    && !(${$types{$_}}{"type"} eq TYPE_XZ && has_no_xz);
         }
         @st = map $types{$_}, (0...$num-1);
         @fs = qw();
@@ -146,15 +150,17 @@ foreach my $rt (@RESULT_TYPES) {
     skip($skip, $_, 1, $@);
     clean_up $_ || $skip, $WORKDIR, ++$tno;
 
-    # 2-4: One of the source log files is read from STDIN
+    # 2-5: One of the source log files is read from STDIN
     # The file type at STDIN
     foreach my $st_stdin (@SOURCE_TYPES) {
         $skip = 0;
         $_ = eval {
             if (    ($$rt{"type"} eq TYPE_GZIP && has_no_gzip)
                     || ($$rt{"type"} eq TYPE_BZIP2 && has_no_bzip2)
+                    || ($$rt{"type"} eq TYPE_XZ && has_no_xz)
                     || ($$st_stdin{"type"} eq TYPE_GZIP && has_no_gzip)
-                    || ($$st_stdin{"type"} eq TYPE_BZIP2 && has_no_bzip2)) {
+                    || ($$st_stdin{"type"} eq TYPE_BZIP2 && has_no_bzip2)
+                    || ($$st_stdin{"type"} eq TYPE_XZ && has_no_xz)) {
                 $skip = 1;
                 return;
             }
@@ -168,13 +174,15 @@ foreach my $rt (@RESULT_TYPES) {
             $title = join ", ", "several log files", "one read from STDIN",
                 "STDIN " . $$st_stdin{"title"}, $$rt{"title"};
             # (2-4 times available compression) log files
-            $_ = 2 + (has_no_gzip? 0: 2) + (has_no_bzip2? 0: 2);
+            $_ = 2 + (has_no_gzip? 0: 2) + (has_no_bzip2? 0: 2)
+                + (has_no_xz? 0: 2);
             $num = $_ + int rand $_;
             my %types = qw();
             # At least 2 files for each available compression
             foreach my $st (@SOURCE_TYPES) {
                 next if ($$st{"type"} eq TYPE_GZIP && has_no_gzip)
-                        || ($$st{"type"} eq TYPE_BZIP2 && has_no_bzip2);
+                        || ($$st{"type"} eq TYPE_BZIP2 && has_no_bzip2)
+                        || ($$st{"type"} eq TYPE_XZ && has_no_xz);
                 @_ = grep !exists $types{$_}, (0...$num-1);
                 $types{$_[int rand @_]} = $st;
                 @_ = grep !exists $types{$_}, (0...$num-1);
@@ -185,7 +193,8 @@ foreach my $rt (@RESULT_TYPES) {
                 do {
                     $types{$_} = $SOURCE_TYPES[int rand @SOURCE_TYPES];
                 } until !(${$types{$_}}{"type"} eq TYPE_GZIP && has_no_gzip)
-                        && !(${$types{$_}}{"type"} eq TYPE_BZIP2 && has_no_bzip2);
+                        && !(${$types{$_}}{"type"} eq TYPE_BZIP2 && has_no_bzip2)
+                        && !(${$types{$_}}{"type"} eq TYPE_XZ && has_no_xz);
             }
             # Choose the STDIN from the matching compression
             @_ = grep ${$types{$_}}{"type"} eq $$st_stdin{"type"}, (0...$num-1);

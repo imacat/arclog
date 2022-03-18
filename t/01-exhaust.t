@@ -1,7 +1,7 @@
 #! /usr/bin/perl -w
 # Test all the possible combination of options
 
-# Copyright (c) 2007-2021 imacat.
+# Copyright (c) 2007-2022 imacat.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@ use warnings;
 use diagnostics;
 use Test;
 
-BEGIN { plan tests => 2160 }
+BEGIN { plan tests => 3600 }
 
 use File::Basename qw(basename);
 use File::Path qw(mkpath rmtree);
@@ -35,7 +35,7 @@ $WORKDIR = catdir($FindBin::Bin, "logs");
 $arclog = catfile($FindBin::Bin, updir, "blib", "script", "arclog");
 $tno = 0;
 
-# 1-2160: All possible option combinations
+# 1-3600: All possible option combinations
 # Test each log file format
 foreach my $fmt (@LOG_FORMATS) {
     # Test each source log file type

@@ -1724,7 +1724,7 @@ sub close : method {
 
         # Create empty compressed content
         print STDERR "  Applying empty compressed content ... " if $VERBOSE > 2;
-        $_ = IO::Compress::Gzip->new($FH, Append => 0)
+        $_ = IO::Compress::Gzip->new($FH)
                                         or die "$THIS_FILE: $file: $IO::Compress::Gzip::GzipError";
         $_->close                       or die "$THIS_FILE: $file: $IO::Compress::Gzip::GzipError";
         undef $_;
@@ -2639,7 +2639,7 @@ sub close : method {
 
         # Create empty compressed content
         print STDERR "  Applying empty compressed content ... " if $VERBOSE > 2;
-        $_ = IO::Compress::Xz->new($FH, Append => 0)
+        $_ = IO::Compress::Xz->new($FH)
                                         or die "$THIS_FILE: $file: $IO::Compress::Xz::XzError";
         $_->close                       or die "$THIS_FILE: $file: $IO::Compress::Xz::XzError";
         undef $_;

@@ -64,6 +64,7 @@ my $build = Module::Build->new(
         "File::MMagic"		=> 0,
         "Compress::Zlib"	=> 0,
         "Compress::Bzip2"	=> 2,
+        "IO::Compress::Xz"	=> 0,
         "Term::ReadKey"		=> 0,
     },
     build_requires		=> {

@@ -229,10 +229,9 @@ sub read_file($) {
     if ($file =~ /\.gz$/) {
         # IO::Uncompress::Gunzip
         if (eval { require IO::Uncompress::Gunzip; 1; }) {
-            my ($FH, $gz);
+            my $gz;
             $content = "";
-            open $FH, $file             or die this_file . ": $file: $!";
-            $gz = IO::Uncompress::Gunzip->new($FH)
+            $gz = IO::Uncompress::Gunzip->new($file)
                                         or die this_file . ": $file: $IO::Uncompress::Gunzip::GunzipError";
             $content = join "", <$gz>;
             $gz->close                  or die this_file . ": $file: $IO::Uncompress::Gunzip::GunzipError";
@@ -253,10 +252,9 @@ sub read_file($) {
     } elsif ($file =~ /\.bz2$/) {
         # IO::Uncompress::Bunzip2
         if (eval { require IO::Uncompress::Bunzip2; 1; }) {
-            my ($FH, $bz);
+            my $bz;
             $content = "";
-            open $FH, $file             or die this_file . ": $file: $!";
-            $bz = IO::Uncompress::Bunzip2->new($FH)
+            $bz = IO::Uncompress::Bunzip2->new($file)
                                         or die this_file . ": $file: $IO::Uncompress::Bunzip2::Bunzip2Error";
             $content = join "", <$bz>;
             $bz->close                  or die this_file . ": $file: $IO::Uncompress::Bunzip2::Bunzip2Error";
@@ -277,10 +275,9 @@ sub read_file($) {
     } elsif ($file =~ /\.xz$/) {
         # IO::Uncompress::UnXz
         if (eval { require IO::Uncompress::UnXz; 1; }) {
-            my ($FH, $xz);
+            my $xz;
             $content = "";
-            open $FH, $file             or die this_file . ": $file: $!";
-            $xz = IO::Uncompress::UnXz->new($FH)
+            $xz = IO::Uncompress::UnXz->new($file)
                                         or die this_file . ": $file: $IO::Uncompress::UnXz::UnXzError";
             $content = join "", <$xz>;
             $xz->close                  or die this_file . ": $file: $IO::Uncompress::UnXz::UnXzError";
@@ -335,9 +332,8 @@ sub write_file($$) {
     if ($file =~ /\.gz$/) {
         # IO::Compress::Gzip
         if (eval { require IO::Compress::Gzip; 1; }) {
-            my ($FH, $gz);
-            open $FH, ">$file"          or die this_file . ": $file: $!";
-            $gz = IO::Compress::Gzip->new($FH)
+            my $gz;
+            $gz = IO::Compress::Gzip->new($file)
                                         or die this_file . ": $file: $IO::Compress::Gzip::GzipError";
             ($gz->write($content) == length $content)
                                         or die this_file . ": $file: $IO::Compress::Gzip::GzipError";
@@ -359,9 +355,8 @@ sub write_file($$) {
     } elsif ($file =~ /\.bz2$/) {
         # IO::Compress::Bzip2
         if (eval { require IO::Compress::Bzip2; 1; }) {
-            my ($FH, $bz);
-            open $FH, ">$file"          or die this_file . ": $file: $!";
-            $bz = IO::Compress::Bzip2->new($FH)
+            my $bz;
+            $bz = IO::Compress::Bzip2->new($file)
                                         or die this_file . ": $file: $IO::Compress::Bzip2::Bzip2Error";
             ($bz->write($content) == length $content)
                                         or die this_file . ": $file: $IO::Compress::Bzip2::Bzip2Error";
@@ -383,9 +378,8 @@ sub write_file($$) {
     } elsif ($file =~ /\.xz/) {
         # IO::Compress::Xz
         if (eval { require IO::Compress::Xz; 1; }) {
-            my ($FH, $xz);
-            open $FH, ">$file"          or die this_file . ": $file: $!";
-            $xz = IO::Compress::Xz->new($FH)
+            my $xz;
+            $xz = IO::Compress::Xz->new($file)
                                         or die this_file . ": $file: $IO::Compress::Xz::XzError";
             ($xz->write($content) == length $content)
                                         or die this_file . ": $file: $IO::Compress::Xz::XzError";

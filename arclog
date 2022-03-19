@@ -2535,7 +2535,7 @@ sub open_write : method {
     }
     ($self->{"file"}, $self->{"FH"}) = ($file, $FH);
     print STDERR "  Attaching file with IO::Compress::Xz ... " if $VERBOSE > 2;
-    $self->{"xz"} = IO::Compress::Xz->new($FH)
+    $self->{"xz"} = IO::Compress::Xz->new($FH, Extreme => 1)
                                         or die "$THIS_FILE: $file: $IO::Compress::Xz::XzError";
     print STDERR "done\n" if $VERBOSE > 2;
     return;
@@ -2580,7 +2580,7 @@ sub open_append : method {
                                         or die "$THIS_FILE: tempfile: $IO::Uncompress::UnXz::UnXzError";
         print STDERR "done\n" if $VERBOSE > 2;
         print STDERR "  Attaching file with IO::Compress::Xz ... " if $VERBOSE > 2;
-        $xz = IO::Compress::Xz->new($FH)
+        $xz = IO::Compress::Xz->new($FH, Extreme => 1)
                                         or die "$THIS_FILE: $file: $IO::Compress::Xz::XzError";
         print STDERR "done\n" if $VERBOSE > 2;
 
@@ -2597,7 +2597,7 @@ sub open_append : method {
     # A whole new file
     } else {
         print STDERR "  Attaching file with IO::Compress::Xz ... " if $VERBOSE > 2;
-        $xz = IO::Compress::Xz->new($FH)
+        $xz = IO::Compress::Xz->new($FH, Extreme => 1)
                                         or die "$THIS_FILE: $file: $IO::Compress::Xz::XzError";
         print STDERR "done\n" if $VERBOSE > 2;
     }
@@ -2639,7 +2639,7 @@ sub close : method {
 
         # Create empty compressed content
         print STDERR "  Applying empty compressed content ... " if $VERBOSE > 2;
-        $_ = IO::Compress::Xz->new($FH)
+        $_ = IO::Compress::Xz->new($FH, Extreme => 1)
                                         or die "$THIS_FILE: $file: $IO::Compress::Xz::XzError";
         $_->close                       or die "$THIS_FILE: $file: $IO::Compress::Xz::XzError";
         undef $_;

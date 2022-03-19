@@ -4,7 +4,7 @@ arclog change log
 	 1. Added support for the xz compression.
 	 2. Replaced Compress::Zlib with IO::Compress::Gzip and
 	    IO::Uncompress::Gunzip.
-	 2. Replaced Compress::Bzip2 with IO::Compress::Bzip2 and
+	 3. Replaced Compress::Bzip2 with IO::Compress::Bzip2 and
 	    IO::Uncompress::Bunzip2.
 
 2020-02-06	version 3.05

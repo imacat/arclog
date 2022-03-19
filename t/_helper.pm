@@ -355,7 +355,7 @@ sub write_file($$) {
             open $FH, ">$file"          or die this_file . ": $file: $!";
             $gz = IO::Compress::Gzip->new($FH)
                                         or die this_file . ": $file: $IO::Compress::Gzip::GzipError";
-            ($gz->write($content, length $content) == length $content)
+            ($gz->write($content) == length $content)
                                         or die this_file . ": $file: $IO::Compress::Gzip::GzipError";
             $gz->close                  or die this_file . ": $file: $IO::Compress::Gzip::GzipError";
             return;
@@ -379,7 +379,7 @@ sub write_file($$) {
             open $FH, ">$file"          or die this_file . ": $file: $!";
             $bz = IO::Compress::Bzip2->new($FH)
                                         or die this_file . ": $file: $IO::Compress::Bzip2::Bzip2Error";
-            ($bz->write($content, length $content) == length $content)
+            ($bz->write($content) == length $content)
                                         or die this_file . ": $file: $IO::Compress::Bzip2::Bzip2Error";
             $bz->close                  or die this_file . ": $file: $IO::Compress::Bzip2::Bzip2Error";
             return;
@@ -403,7 +403,7 @@ sub write_file($$) {
             open $FH, ">$file"          or die this_file . ": $file: $!";
             $xz = IO::Compress::Xz->new($FH)
                                         or die this_file . ": $file: $IO::Compress::Xz::XzError";
-            ($xz->write($content, length $content) == length $content)
+            ($xz->write($content) == length $content)
                                         or die this_file . ": $file: $IO::Compress::Xz::XzError";
             $xz->close                  or die this_file . ": $file: $IO::Compress::Xz::XzError";
             return;

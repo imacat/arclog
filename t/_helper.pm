@@ -344,7 +344,7 @@ sub write_file($$) {
         } else {
             my ($PH, $CMD);
             $CMD = where_is "gzip";
-            $CMD = "\"$CMD\" -c9f > \"$file\"";
+            $CMD = "\"$CMD\" -cf > \"$file\"";
             open $PH, "| $CMD"          or die this_file . ": $CMD: $!";
             print $PH $content          or die this_file . ": $CMD: $!";
             close $PH                   or die this_file . ": $CMD: $!";
@@ -367,7 +367,7 @@ sub write_file($$) {
         } else {
             my ($PH, $CMD);
             $CMD = where_is "bzip2";
-            $CMD = "\"$CMD\" -9f > \"$file\"";
+            $CMD = "\"$CMD\" -cf > \"$file\"";
             open $PH, "| $CMD"        or die this_file . ": $CMD: $!";
             print $PH $content        or die this_file . ": $CMD: $!";
             close $PH                 or die this_file . ": $CMD: $!";
@@ -390,7 +390,7 @@ sub write_file($$) {
         } else {
             my ($PH, $CMD);
             $CMD = where_is "xz";
-            $CMD = "\"$CMD\" -9f > \"$file\"";
+            $CMD = "\"$CMD\" -cf > \"$file\"";
             open $PH, "| $CMD"        or die this_file . ": $CMD: $!";
             print $PH $content        or die this_file . ": $CMD: $!";
             close $PH                 or die this_file . ": $CMD: $!";

@@ -227,22 +227,20 @@ sub read_file($) {
 
     # a gzip compressed file
     if ($file =~ /\.gz$/) {
-        # Compress::Zlib
-        if (eval {  require Compress::Zlib;
-                    Compress::Zlib->import(qw(gzopen));
-                    1; }) {
-            use Compress::Zlib qw(gzopen);
+        # IO::Uncompress::Gunzip
+        if (eval { require IO::Uncompress::Gunzip; 1; }) {
             my ($FH, $gz);
             $content = "";
             open $FH, $file             or die this_file . ": $file: $!";
-            $gz = gzopen($FH, "rb")     or die this_file . ": $file: $!";
+            $gz = IO::Uncompress::Gunzip->new($FH)
+                                        or die this_file . ": $file: $IO::Uncompress::Gunzip::GunzipError";
             while (1) {
-                ($gz->gzread($_, 10240) != -1)
-                                        or die this_file . ": $file: " . $gz->gzerror;
+                ($gz->read($_, 10240) != -1)
+                                        or die this_file . ": $file: $IO::Uncompress::Gunzip::GunzipError";
                 $content .= $_;
                 last if length $_ < 10240;
             }
-            $gz->gzclose                and die this_file . ": $file: " . $gz->gzerror;
+            $gz->close                  or die this_file . ": $file: $IO::Uncompress::Gunzip::GunzipError";
             return $content;
 
         # gzip executable
@@ -258,22 +256,20 @@ sub read_file($) {
 
     # a bzip compressed file
     } elsif ($file =~ /\.bz2$/) {
-        # Compress::Bzip2
-        if (eval {  require Compress::Bzip2;
-                    Compress::Bzip2->import(2.00);
-                    Compress::Bzip2->import(qw(bzopen));
-                    1; }) {
+        # IO::Uncompress::Bunzip2
+        if (eval { require IO::Uncompress::Bunzip2; 1; }) {
             my ($FH, $bz);
             $content = "";
             open $FH, $file             or die this_file . ": $file: $!";
-            $bz = bzopen($FH, "rb")     or die this_file . ": $file: $!";
+            $bz = IO::Uncompress::Bunzip2->new($FH)
+                                        or die this_file . ": $file: $IO::Uncompress::Bunzip2::Bunzip2Error";
             while (1) {
-                ($bz->bzread($_, 10240) != -1)
-                                        or die this_file . ": $file: " . $bz->bzerror;
+                ($bz->read($_, 10240) != -1)
+                                        or die this_file . ": $file: $IO::Uncompress::Bunzip2::Bunzip2Error";
                 $content .= $_;
                 last if length $_ < 10240;
             }
-            $bz->bzclose                and die this_file . ": $file: " . $bz->bzerror;
+            $bz->close                  or die this_file . ": $file: $IO::Uncompress::Bunzip2::Bunzip2Error";
             return $content;
 
         # bzip2 executable
@@ -353,16 +349,15 @@ sub write_file($$) {
 
     # a gzip compressed file
     if ($file =~ /\.gz$/) {
-        # Compress::Zlib
-        if (eval {  require Compress::Zlib;
-                    Compress::Zlib->import(qw(gzopen));
-                    1; }) {
+        # IO::Compress::Gzip
+        if (eval { require IO::Compress::Gzip; 1; }) {
             my ($FH, $gz);
             open $FH, ">$file"          or die this_file . ": $file: $!";
-            $gz = gzopen($FH, "wb9")    or die this_file . ": $file: $!";
-            ($gz->gzwrite($content) == length $content)
-                                        or die this_file . ": $file: " . $gz->gzerror;
-            $gz->gzclose                and die this_file . ": $file: " . $gz->gzerror;
+            $gz = IO::Compress::Gzip->new($FH)
+                                        or die this_file . ": $file: $IO::Compress::Gzip::GzipError";
+            ($gz->write($content, length $content) == length $content)
+                                        or die this_file . ": $file: $IO::Compress::Gzip::GzipError";
+            $gz->close                  or die this_file . ": $file: $IO::Compress::Gzip::GzipError";
             return;
 
         # gzip executable
@@ -378,17 +373,15 @@ sub write_file($$) {
 
     # a bzip compressed file
     } elsif ($file =~ /\.bz2$/) {
-        # Compress::Bzip2
-        if (eval {  require Compress::Bzip2;
-                    Compress::Bzip2->import(2.00);
-                    Compress::Bzip2->import(qw(bzopen));
-                    1; }) {
+        # IO::Compress::Bzip2
+        if (eval { require IO::Compress::Bzip2; 1; }) {
             my ($FH, $bz);
             open $FH, ">$file"          or die this_file . ": $file: $!";
-            $bz = bzopen($FH, "wb9")    or die this_file . ": $file: $!";
-            ($bz->bzwrite($content, length $content) == length $content)
-                                        or die this_file . ": $file: " . $bz->bzerror;
-            $bz->bzclose                and die this_file . ": $file: " . $bz->bzerror;
+            $bz = IO::Compress::Bzip2->new($FH)
+                                        or die this_file . ": $file: $IO::Compress::Bzip2::Bzip2Error";
+            ($bz->write($content, length $content) == length $content)
+                                        or die this_file . ": $file: $IO::Compress::Bzip2::Bzip2Error";
+            $bz->close                  or die this_file . ": $file: $IO::Compress::Bzip2::Bzip2Error";
             return;
 
         # bzip2 executable
@@ -601,18 +594,18 @@ sub has_no_file() {
 
 # If we have gzip support somewhere
 sub has_no_gzip() {
-    $HAS_NO_GZIP = eval { require Compress::Zlib; 1; }
+    $HAS_NO_GZIP = eval { require IO::Compress::Gzip; require IO::Uncompress::Gunzip; 1; }
                 || defined where_is "gzip"?
-            0: "Compress::Zlib or gzip executable not available"
+            0: "IO::Compress::Gzip or gzip executable not available"
         if !defined $HAS_NO_GZIP;
     return $HAS_NO_GZIP;
 }
 
 # If we have bzip2 support somewhere
 sub has_no_bzip2() {
-    $HAS_NO_BZIP2 = eval { require Compress::Bzip2; Compress::Bzip2->import(2.00); 1; }
+    $HAS_NO_BZIP2 = eval { require IO::Compress::Bzip2; require IO::Uncompress::Bunzip2; 1; }
                 || defined where_is "bzip2"?
-            0: "Compress::Bzip2 v2 or bzip2 executable not available"
+            0: "IO::Compress::Bzip2 v2 or bzip2 executable not available"
         if !defined $HAS_NO_BZIP2;
     return $HAS_NO_BZIP2;
 }

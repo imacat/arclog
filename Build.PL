@@ -62,8 +62,8 @@ my $build = Module::Build->new(
     },
     recommends		=> {
         "File::MMagic"		=> 0,
-        "Compress::Zlib"	=> 0,
-        "Compress::Bzip2"	=> 2,
+        "IO::Compress::Gzip"	=> 0,
+        "IO::Compress::Bzip2"	=> 2,
         "IO::Compress::Xz"	=> 0,
         "Term::ReadKey"		=> 0,
     },

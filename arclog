@@ -824,7 +824,6 @@ sub check_type : method {
 
     # Check by file name suffix
     # Check by file name suffix on empty files, too.
-    # Compress::Bzip2 2 creates empty files that confuses further processing.
     if (-z $FH || $MAGIC_METHOD eq MAGIC_SUFFIX) {
         return TYPE_GZIP if $file =~ /\.gz$/;
         return TYPE_BZIP2 if $file =~ /\.bz2$/;
@@ -1265,13 +1264,13 @@ sub check_gzip : method {
     # Checked before
     return ref($GZIP_IO)->new if defined $GZIP_IO;
 
-    # See whether Compress::Zlib or gzip
+    # See whether IO::Compress::Gzip or gzip
     print STDERR "Checking gzip I/O handler to use ... " if $VERBOSE > 1;
-    print STDERR "\n  Checking Compress::Zlib ... " if $VERBOSE > 2;
-    # Check if we have Compress::Zlib
-    if (eval { require Compress::Zlib; 1; }) {
+    print STDERR "\n  Checking IO::Compress::Gzip ... " if $VERBOSE > 2;
+    # Check if we have IO::Compress::Gzip
+    if (eval { require IO::Compress::Gzip; require IO::Uncompress::Gunzip; 1; }) {
         print STDERR "OK\nfound " if $VERBOSE > 2;
-        print STDERR "Compress::Zlib\n" if $VERBOSE > 1;
+        print STDERR "IO::Compress::Gzip\n" if $VERBOSE > 1;
         return ($GZIP_IO = _private::IO::Gzip::PM->new);
     }
     # Not found
@@ -1290,7 +1289,7 @@ sub check_gzip : method {
     print STDERR "no\n" if $VERBOSE > 2;
 
     print STDERR "not found\n" if $VERBOSE > 1;
-    die "$THIS_FILE: Necessary Compress::Zlib or gzip not available.\n$SHORT_HELP\n";
+    die "$THIS_FILE: Necessary IO::Compress::Gzip or gzip not available.\n$SHORT_HELP\n";
 }
 
 # Check for compression method of bzip2
@@ -1300,13 +1299,13 @@ sub check_bzip2 : method {
     # Checked before
     return ref($BZIP2_IO)->new if defined $BZIP2_IO;
 
-    # See whether Compress::Bzip2 or bzip2
+    # See whether IO::Compress::Bzip2 or bzip2
     print STDERR "Checking bzip2 I/O handler to use ... " if $VERBOSE > 1;
-    print STDERR "\n  Checking Compress::Bzip2 ... " if $VERBOSE > 2;
-    # Check if we have Compress::Bzip2
-    if (eval { require Compress::Bzip2; import Compress::Bzip2 2.00; 1; }) {
+    print STDERR "\n  Checking IO::Compress::Bzip2 ... " if $VERBOSE > 2;
+    # Check if we have IO::Compress::Bzip2
+    if (eval { require IO::Compress::Bzip2; require IO::Uncompress::Bunzip2; 1; }) {
         print STDERR "OK\nfound " if $VERBOSE > 2;
-        print STDERR "Compress::Bzip2\n" if $VERBOSE > 1;
+        print STDERR "IO::Compress::Bzip2\n" if $VERBOSE > 1;
         return ($BZIP2_IO = _private::IO::Bzip2::PM->new);
     }
     # Not found
@@ -1325,7 +1324,7 @@ sub check_bzip2 : method {
     print STDERR "no\n" if $VERBOSE > 2;
 
     print STDERR "not found\n" if $VERBOSE > 1;
-    die "$THIS_FILE: Necessary Compress::Bzip2 or bzip2 not available.\n$SHORT_HELP\n";
+    die "$THIS_FILE: Necessary IO::Compress::Bzip2 or bzip2 not available.\n$SHORT_HELP\n";
 }
 
 # Check for compression method of xz
@@ -1599,9 +1598,9 @@ sub open_read : method {
         print STDERR "done\n" if $VERBOSE > 2;
     }
     ($self->{"file"}, $self->{"FH"}) = ($file, $FH);
-    import Compress::Zlib qw(gzopen);
-    print STDERR "  Attaching file with gzopen(..., \"rb\") ... " if $VERBOSE > 2;
-    $self->{"gz"} = gzopen($FH, "rb")   or die "$THIS_FILE: $file: $!";
+    print STDERR "  Attaching file with IO::Uncompress::Gunzip ... " if $VERBOSE > 2;
+    $self->{"gz"} = IO::Uncompress::Gunzip->new($FH)
+                                        or die "$THIS_FILE: $file: $IO::Uncompress::Gunzip::GunzipError";
     print STDERR "done\n" if $VERBOSE > 2;
     return;
 }
@@ -1620,9 +1619,9 @@ sub open_write : method {
         print STDERR "done\n" if $VERBOSE > 2;
     }
     ($self->{"file"}, $self->{"FH"}) = ($file, $FH);
-    import Compress::Zlib qw(gzopen);
-    print STDERR "  Attaching file with gzopen(..., \"wb9\") ... " if $VERBOSE > 2;
-    $self->{"gz"} = gzopen($FH, "wb9")  or die "$THIS_FILE: $file: $!";
+    print STDERR "  Attaching file with IO::Compress::Gzip ... " if $VERBOSE > 2;
+    $self->{"gz"} = IO::Compress::Gzip->new($FH)
+                                        or die "$THIS_FILE: $file: $IO::Compress::Gzip::GzipError";
     print STDERR "done\n" if $VERBOSE > 2;
     return;
 }
@@ -1641,7 +1640,6 @@ sub open_append : method {
         print STDERR "done\n" if $VERBOSE > 2;
     }
     ($self->{"file"}, $self->{"FH"}) = ($file, $FH);
-    import Compress::Zlib qw(gzopen);
 
     # Save the original data if file has content so that file size is
     # greater than 0.  STDOUT is always of size 0.
@@ -1662,18 +1660,20 @@ sub open_append : method {
         print STDERR "done\n" if $VERBOSE > 2;
 
         # Decompress the buffer and save to our file
-        print STDERR "  Attaching buffer with gzopen(..., \"rb\") ... " if $VERBOSE > 2;
-        $gzt = gzopen($FHT, "rb")       or die "$THIS_FILE: tempfile: $!";
+        print STDERR "  Attaching buffer with IO::Uncompress::Gunzip ... " if $VERBOSE > 2;
+        $gzt = IO::Uncompress::Gunzip->new($FHT)
+                                        or die "$THIS_FILE: tempfile: $IO::Uncompress::Gunzip::GunzipError";
         print STDERR "done\n" if $VERBOSE > 2;
-        print STDERR "  Attaching file with gzopen(..., \"wb9\") ... " if $VERBOSE > 2;
-        $gz = gzopen($FH, "wb9")        or die "$THIS_FILE: $file: $!";
+        print STDERR "  Attaching file with IO::Compress::Gzip ... " if $VERBOSE > 2;
+        $gz = IO::Compress::Gzip->new($FH)
+                                        or die "$THIS_FILE: $file: $IO::Compress::Gzip::GzipError";
         print STDERR "done\n" if $VERBOSE > 2;
 
         print STDERR "  Reading old records back from the buffer ... " if $VERBOSE > 2;
         $count = 0;
-        while (($n = $gzt->gzreadline($_)) != 0) {
-            die "$THIS_FILE: tempfile: " . $gz->gzerror if $n == -1;
-            ($gz->gzwrite($_) == $n)    or die "$THIS_FILE: $file: " . $gz->gzerror;
+        while (defined($_ = $gzt->getline)) {
+            ($gz->write($_) == length $_)
+                                        or die "$THIS_FILE: $file: $IO::Compress::Gzip::GzipError";
             $count++;
         }
         close $FHT                      or die "$THIS_FILE: tempfile: $!";
@@ -1681,8 +1681,9 @@ sub open_append : method {
 
     # A whole new file
     } else {
-        print STDERR "  Attaching file with gzopen(..., \"wb9\") ... " if $VERBOSE > 2;
-        $gz = gzopen($FH, "wb9")        or die "$THIS_FILE: $file: $!";
+        print STDERR "  Attaching file with IO::Compress::Gzip ... " if $VERBOSE > 2;
+        $gz = IO::Compress::Gzip->new($FH)
+                                        or die "$THIS_FILE: $file: $IO::Compress::Gzip::GzipError";
         print STDERR "done\n" if $VERBOSE > 2;
     }
 
@@ -1692,13 +1693,7 @@ sub open_append : method {
 
 # Read a line from the I/O stream
 sub readline : method {
-    local ($_, %_);
-    my ($self, $file, $gz, $n);
-    $self = $_[0];
-    ($file, $gz) = ($self->{"file"}, $self->{"gz"});
-    (($n = $gz->gzreadline($_)) != -1)  or die "$THIS_FILE: $file: " . $gz->gzerror;
-    return undef if $n == 0;
-    return $_;
+    return $_[0]->{"gz"}->getline();
 }
 
 # Output data to the I/O stream
@@ -1707,7 +1702,7 @@ sub write : method {
     my ($self, $file, $gz);
     ($self, $_) = @_;
     ($file, $gz) = ($self->{"file"}, $self->{"gz"});
-    ($gz->gzwrite($_) == length $_)     or die "$THIS_FILE: $file: " . $gz->gzerror;
+    ($gz->write($_) == length $_)       or die "$THIS_FILE: $file: $IO::Compress::Gzip::GzipError";
     return;
 }
 
@@ -1729,15 +1724,16 @@ sub close : method {
 
         # Create empty compressed content
         print STDERR "  Applying empty compressed content ... " if $VERBOSE > 2;
-        $_ = gzopen($FH, "wb9")         or die "$THIS_FILE: $file: $!";
-        $_->gzclose                     and die "$THIS_FILE: $file: " . $_->gzerror;
+        $_ = IO::Compress::Gzip->new($FH, Append => 0)
+                                        or die "$THIS_FILE: $file: $IO::Compress::Gzip::GzipError";
+        $_->close                       or die "$THIS_FILE: $file: $IO::Compress::Gzip::GzipError";
         undef $_;
         undef $gz;
         print STDERR "done\n" if $VERBOSE > 2;
     }
 
     if (defined $gz) {
-        $gz->gzclose                    and die "$THIS_FILE: $file: " . $gz->gzerror;
+        $gz->close                      or die "$THIS_FILE: $file: $IO::Compress::Gzip::GzipError";
     }
     CORE::close $self->{"FH"} if $self->{"FH"}->opened;
     delete $self->{"gz"};
@@ -2059,9 +2055,9 @@ sub open_read : method {
         print STDERR "done\n" if $VERBOSE > 2;
     }
     ($self->{"file"}, $self->{"FH"}) = ($file, $FH);
-    import Compress::Bzip2 qw(bzopen);
-    print STDERR "  Attaching file with bzopen(..., \"rb\") ... " if $VERBOSE > 2;
-    $self->{"bz"} = bzopen($FH, "rb")   or die "$THIS_FILE: $file: $!";
+    print STDERR "  Attaching file with IO::Uncompress::Bunzip2 ... " if $VERBOSE > 2;
+    $self->{"bz"} = IO::Uncompress::Bunzip2->new($FH)
+                                        or die "$THIS_FILE: $file: $IO::Uncompress::Bunzip2::Bunzip2Error";
     print STDERR "done\n" if $VERBOSE > 2;
     return;
 }
@@ -2080,9 +2076,9 @@ sub open_write : method {
         print STDERR "done\n" if $VERBOSE > 2;
     }
     ($self->{"file"}, $self->{"FH"}) = ($file, $FH);
-    import Compress::Bzip2 qw(bzopen);
-    print STDERR "  Attaching file with bzopen(..., \"wb9\") ... " if $VERBOSE > 2;
-    $self->{"bz"} = bzopen($FH, "wb9")  or die "$THIS_FILE: $file: $!";
+    print STDERR "  Attaching file with IO::Compress::Bzip2 ... " if $VERBOSE > 2;
+    $self->{"bz"} = IO::Compress::Bzip2->new($FH)
+                                        or die "$THIS_FILE: $file: $IO::Compress::Bzip2::Bzip2Error";
     print STDERR "done\n" if $VERBOSE > 2;
     return;
 }
@@ -2101,7 +2097,6 @@ sub open_append : method {
         print STDERR "done\n" if $VERBOSE > 2;
     }
     ($self->{"file"}, $self->{"FH"}) = ($file, $FH);
-    import Compress::Bzip2 qw(bzopen);
 
     # Save the original data if file has content so that file size is
     # greater than 0.  STDOUT is always of size 0.
@@ -2122,19 +2117,20 @@ sub open_append : method {
         print STDERR "done\n" if $VERBOSE > 2;
 
         # Decompress the buffer and save to our file
-        print STDERR "  Attaching buffer with bzopen(..., \"rb\") ... " if $VERBOSE > 2;
-        $bzt = bzopen($FHT, "rb")       or die "$THIS_FILE: tempfile: $!";
+        print STDERR "  Attaching buffer with IO::Uncompress::Bunzip2 ... " if $VERBOSE > 2;
+        $bzt = IO::Uncompress::Bunzip2->new($FHT)
+                                        or die "$THIS_FILE: $file: $IO::Uncompress::Bunzip2::Bunzip2Error";
         print STDERR "done\n" if $VERBOSE > 2;
-        print STDERR "  Attaching file with bzopen(..., \"wb9\") ... " if $VERBOSE > 2;
-        $bz = bzopen($FH, "wb9")        or die "$THIS_FILE: $file: $!";
+        print STDERR "  Attaching file with IO::Compress::Bzip2 ... " if $VERBOSE > 2;
+        $bz = IO::Compress::Bzip2->new($FH)
+                                        or die "$THIS_FILE: $file: $IO::Compress::Bzip2::Bzip2Error";
         print STDERR "done\n" if $VERBOSE > 2;
 
         print STDERR "  Reading old records back from the buffer ... " if $VERBOSE > 2;
         $count = 0;
-        while (($n = $bzt->bzreadline($_)) != 0) {
-            die "$THIS_FILE: tempfile: " . $bz->bzerror if $n == -1;
-            ($bz->bzwrite($_, length $_) == length $_)
-                                        or die "$THIS_FILE: $file: " . $bz->bzerror;
+        while (defined($_ = $bzt->getline)) {
+            ($bz->write($_) == length $_)
+                                        or die "$THIS_FILE: $file: $IO::Compress::Bzip2::Bzip2Error";
             $count++;
         }
         close $FHT                      or die "$THIS_FILE: tempfile: $!";
@@ -2142,8 +2138,9 @@ sub open_append : method {
 
     # A whole new file
     } else {
-        print STDERR "  Attaching file with bzopen(..., \"wb9\") ... " if $VERBOSE > 2;
-        $bz = bzopen($FH, "wb9")        or die "$THIS_FILE: $file: $!";
+        print STDERR "  Attaching file with IO::Compress::Bzip2 ... " if $VERBOSE > 2;
+        $bz = IO::Compress::Bzip2->new($FH)
+                                        or die "$THIS_FILE: $file: $IO::Compress::Bzip2::Bzip2Error";
         print STDERR "done\n" if $VERBOSE > 2;
     }
 
@@ -2153,13 +2150,7 @@ sub open_append : method {
 
 # Read a line from the I/O stream
 sub readline : method {
-    local ($_, %_);
-    my ($self, $file, $bz, $n);
-    $self = $_[0];
-    ($file, $bz) = ($self->{"file"}, $self->{"bz"});
-    (($n = $bz->bzreadline($_)) != -1)  or die "$THIS_FILE: $file: " . $bz->bzerror;
-    return undef if $n == 0;
-    return $_;
+    return $_[0]->{"bz"}->getline();
 }
 
 # Output data to the I/O stream
@@ -2168,8 +2159,7 @@ sub write : method {
     my ($self, $file, $bz);
     ($self, $_) = @_;
     ($file, $bz) = ($self->{"file"}, $self->{"bz"});
-    ($bz->bzwrite($_, length $_) == length $_)
-                                        or die "$THIS_FILE: $file: " . $bz->bzerror;
+    ($bz->write($_) == length $_)       or die "$THIS_FILE: $file: $IO::Compress::Xz::XzError";
     return;
 }
 
@@ -2191,15 +2181,16 @@ sub close : method {
 
         # Create empty compressed content
         print STDERR "  Applying empty compressed content ... " if $VERBOSE > 2;
-        $_ = bzopen($FH, "wb9")         or die "$THIS_FILE: $file: $!";
-        $_->bzclose                     and die "$THIS_FILE: $file: " . $_->bzerror;
+        $_ = IO::Compress::Bzip2->new($FH)
+                                        or die "$THIS_FILE: $file: $IO::Compress::Bzip2::Bzip2Error";
+        $_->close                       or die "$THIS_FILE: $file: $IO::Compress::Bzip2::Bzip2Error";
         undef $_;
         undef $bz;
         print STDERR "done\n" if $VERBOSE > 2;
     }
 
     if (defined $bz) {
-        $bz->bzclose                    and die "$THIS_FILE: $file: " . $bz->bzerror;
+        $bz->close                      or die "$THIS_FILE: $file: $IO::Compress::Bzip2::Bzip2Error";
     }
     CORE::close $self->{"FH"} if $self->{"FH"}->opened;
     delete $self->{"bz"};
@@ -3201,20 +3192,22 @@ them.)  The following compression methods are supported:
 =item g, gzip
 
 Compress with L<gzip(1)|gzip/1>.  This is the default.  F<arclog>
-can use L<Compress::Zlib(3)|Compress::Zlib/3> to compress instead of
-calling L<gzip(1)|gzip/1>.  This can be safer and faster for not
-calling foreign binaries.  if L<Compress::Zlib(3)|Compress::Zlib/3>
-is not installed, it tries L<gzip(1)|gzip/1> instead.  If
-L<gzip(1)|gzip/1> is not available, either, it fails.
+can use L<IO::Compress::Gzip(3)|IO::Compress::Gzip/3> to compress
+instead of calling L<gzip(1)|gzip/1>.  This can be safer and faster
+for not calling foreign binaries.  if
+L<IO::Compress::Gzip(3)|IO::Compress::Gzip/3> is not installed, it
+tries L<gzip(1)|gzip/1> instead.  If L<gzip(1)|gzip/1> is not
+available, either, it fails.
 
 =item b, bzip2
 
 Compress with L<bzip2(1)|bzip2/1>.  F<arclog> can use
-L<Compress::Bzip2(3)|Compress::Bzip2/3> to compress instead of
-calling L<bzip2(1)|bzip2/1>.  This can be safer and faster for not
-calling foreign binaries.  If L<Compress::Bzip2(3)|Compress::Bzip2/3>
-is not installed, it will try to use L<bzip2(1)|bzip2/1> instead.  If
-L<bzip2(1)|bzip2/1> is not available, either, it fails.
+L<IO::Compress::Bzip2(3)|IO::Compress::Bzip2/3> to compress
+instead of calling L<bzip2(1)|bzip2/1>.  This can be safer and faster
+for not calling foreign binaries.  If
+L<IO::Compress::Bzip2(3)|IO::Compress::Bzip2/3> is not installed, it
+will try to use L<bzip2(1)|bzip2/1> instead.  If L<bzip2(1)|bzip2/1>
+is not available, either, it fails.
 
 =item x, xz
 
@@ -3377,11 +3370,12 @@ messages.
 
 =head1 SEE ALSO
 
-L<gzip(1)|gzip/1>, L<bzip2(1)|bzip2/1>, L<xz(1)|xz/1>,
-L<Compress::Zlib(3)|Compress::Zlib/3>, L<syslog(1)|syslog/1>,
-L<Compress::Bzip2(3)|Compress::Bzip2/3>,
-L<IO::Compress::Xz(3)|IO::Compress::Xz/3>,
+L<gzip(1)|gzip/1>, L<IO::Compress::Gzip(3)|IO::Compress::Gzip/3>,
+L<IO::Uncompress::Gunzip(3)|IO::Uncompress::Gunzip/3>,
+L<bzip2(1)|bzip2/1>, L<IO::Compress::Bzip2(3)|IO::Compress::Bzip2/3>,
+L<IO::Uncompress::Bunzip2(3)|IO::Uncompress::Bunzip2/3>,
+L<xz(1)|xz/1>, L<IO::Compress::Xz(3)|IO::Compress::Xz/3>,
 L<IO::Uncompress::UnXz(3)|IO::Uncompress::UnXz/3>,
-L<syslog(2)|syslog/2>
+L<syslog(1)|syslog/1>, L<syslog(2)|syslog/2>
 
 =cut

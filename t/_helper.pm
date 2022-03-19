@@ -288,7 +288,7 @@ sub read_file($) {
         }
 
     # an xz compressed file
-    } elsif ($file =~ /\.xz/) {
+    } elsif ($file =~ /\.xz$/) {
         # IO::Uncompress::UnXz
         if (eval { require IO::Uncompress::UnXz; 1; }) {
             my ($FH, $xz);

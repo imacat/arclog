@@ -2648,7 +2648,7 @@ sub close : method {
     }
 
     if (defined $xz) {
-        $xz->close                      or die "$THIS_FILE: $file: $IO::Compress::Xz::XzError!";
+        $xz->close                      or die "$THIS_FILE: $file: $IO::Compress::Xz::XzError";
     }
     CORE::close $self->{"FH"} if $self->{"FH"}->opened;
     delete $self->{"xz"};

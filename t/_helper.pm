@@ -264,7 +264,7 @@ sub read_file($) {
         } else {
             my ($PH, $CMD);
             $CMD = where_is "bzip2";
-            $CMD = "bzip2 -cd \"$file\"";
+            $CMD = "\"$CMD\" -cd \"$file\"";
             open $PH, "$CMD |"          or die this_file . ": $CMD: $!";
             $content = join "", <$PH>;
             close $PH                   or die this_file . ": $CMD: $!";
@@ -287,7 +287,7 @@ sub read_file($) {
         } else {
             my ($PH, $CMD);
             $CMD = where_is "xz";
-            $CMD = "xz -cd \"$file\"";
+            $CMD = "\"$CMD\" -cd \"$file\"";
             open $PH, "$CMD |"          or die this_file . ": $CMD: $!";
             $content = join "", <$PH>;
             close $PH                   or die this_file . ": $CMD: $!";

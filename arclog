@@ -1692,9 +1692,7 @@ sub open_append : method {
 }
 
 # Read a line from the I/O stream
-sub readline : method {
-    return $_[0]->{"gz"}->getline();
-}
+sub readline : method { $_[0]->{"gz"}->getline; }
 
 # Output data to the I/O stream
 sub write : method {
@@ -2149,9 +2147,7 @@ sub open_append : method {
 }
 
 # Read a line from the I/O stream
-sub readline : method {
-    return $_[0]->{"bz"}->getline();
-}
+sub readline : method { $_[0]->{"bz"}->getline; }
 
 # Output data to the I/O stream
 sub write : method {
@@ -2607,9 +2603,7 @@ sub open_append : method {
 }
 
 # Read a line from the I/O stream
-sub readline : method {
-    return $_[0]->{"xz"}->getline();
-}
+sub readline : method { $_[0]->{"xz"}->getline; }
 
 # Output data to the I/O stream
 sub write : method {

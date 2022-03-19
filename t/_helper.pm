@@ -333,7 +333,7 @@ sub write_file($$) {
         # IO::Compress::Gzip
         if (eval { require IO::Compress::Gzip; 1; }) {
             my $gz;
-            $gz = IO::Compress::Gzip->new($file)
+            $gz = IO::Compress::Gzip->new($file, -Level => 9)
                                         or die this_file . ": $file: $IO::Compress::Gzip::GzipError";
             ($gz->write($content) == length $content)
                                         or die this_file . ": $file: $IO::Compress::Gzip::GzipError";
@@ -344,7 +344,7 @@ sub write_file($$) {
         } else {
             my ($PH, $CMD);
             $CMD = where_is "gzip";
-            $CMD = "\"$CMD\" -cf > \"$file\"";
+            $CMD = "\"$CMD\" -c9f > \"$file\"";
             open $PH, "| $CMD"          or die this_file . ": $CMD: $!";
             print $PH $content          or die this_file . ": $CMD: $!";
             close $PH                   or die this_file . ": $CMD: $!";
@@ -356,7 +356,7 @@ sub write_file($$) {
         # IO::Compress::Bzip2
         if (eval { require IO::Compress::Bzip2; 1; }) {
             my $bz;
-            $bz = IO::Compress::Bzip2->new($file)
+            $bz = IO::Compress::Bzip2->new($file, BlockSize100K => 9)
                                         or die this_file . ": $file: $IO::Compress::Bzip2::Bzip2Error";
             ($bz->write($content) == length $content)
                                         or die this_file . ": $file: $IO::Compress::Bzip2::Bzip2Error";
@@ -367,7 +367,7 @@ sub write_file($$) {
         } else {
             my ($PH, $CMD);
             $CMD = where_is "bzip2";
-            $CMD = "\"$CMD\" -cf > \"$file\"";
+            $CMD = "\"$CMD\" -c9f > \"$file\"";
             open $PH, "| $CMD"        or die this_file . ": $CMD: $!";
             print $PH $content        or die this_file . ": $CMD: $!";
             close $PH                 or die this_file . ": $CMD: $!";
@@ -379,7 +379,7 @@ sub write_file($$) {
         # IO::Compress::Xz
         if (eval { require IO::Compress::Xz; 1; }) {
             my $xz;
-            $xz = IO::Compress::Xz->new($file)
+            $xz = IO::Compress::Xz->new($file, Extreme => 1)
                                         or die this_file . ": $file: $IO::Compress::Xz::XzError";
             ($xz->write($content) == length $content)
                                         or die this_file . ": $file: $IO::Compress::Xz::XzError";
@@ -390,7 +390,7 @@ sub write_file($$) {
         } else {
             my ($PH, $CMD);
             $CMD = where_is "xz";
-            $CMD = "\"$CMD\" -cf > \"$file\"";
+            $CMD = "\"$CMD\" -c9f > \"$file\"";
             open $PH, "| $CMD"        or die this_file . ": $CMD: $!";
             print $PH $content        or die this_file . ": $CMD: $!";
             close $PH                 or die this_file . ": $CMD: $!";

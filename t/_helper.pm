@@ -280,7 +280,6 @@ sub read_file($) {
             my ($FH, $xz);
             $content = "";
             open $FH, $file             or die this_file . ": $file: $!";
-
             $xz = IO::Uncompress::UnXz->new($FH)
                                         or die this_file . ": $file: $IO::Uncompress::UnXz::UnXzError";
             $content = join "", <$xz>;

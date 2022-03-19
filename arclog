@@ -1620,7 +1620,7 @@ sub open_write : method {
     }
     ($self->{"file"}, $self->{"FH"}) = ($file, $FH);
     print STDERR "  Attaching file with IO::Compress::Gzip ... " if $VERBOSE > 2;
-    $self->{"gz"} = IO::Compress::Gzip->new($FH)
+    $self->{"gz"} = IO::Compress::Gzip->new($FH, -Level => 9)
                                         or die "$THIS_FILE: $file: $IO::Compress::Gzip::GzipError";
     print STDERR "done\n" if $VERBOSE > 2;
     return;
@@ -1665,7 +1665,7 @@ sub open_append : method {
                                         or die "$THIS_FILE: tempfile: $IO::Uncompress::Gunzip::GunzipError";
         print STDERR "done\n" if $VERBOSE > 2;
         print STDERR "  Attaching file with IO::Compress::Gzip ... " if $VERBOSE > 2;
-        $gz = IO::Compress::Gzip->new($FH)
+        $gz = IO::Compress::Gzip->new($FH, -Level => 9)
                                         or die "$THIS_FILE: $file: $IO::Compress::Gzip::GzipError";
         print STDERR "done\n" if $VERBOSE > 2;
 
@@ -1682,7 +1682,7 @@ sub open_append : method {
     # A whole new file
     } else {
         print STDERR "  Attaching file with IO::Compress::Gzip ... " if $VERBOSE > 2;
-        $gz = IO::Compress::Gzip->new($FH)
+        $gz = IO::Compress::Gzip->new($FH, -Level => 9)
                                         or die "$THIS_FILE: $file: $IO::Compress::Gzip::GzipError";
         print STDERR "done\n" if $VERBOSE > 2;
     }
@@ -1724,7 +1724,7 @@ sub close : method {
 
         # Create empty compressed content
         print STDERR "  Applying empty compressed content ... " if $VERBOSE > 2;
-        $_ = IO::Compress::Gzip->new($FH)
+        $_ = IO::Compress::Gzip->new($FH, -Level => 9)
                                         or die "$THIS_FILE: $file: $IO::Compress::Gzip::GzipError";
         $_->close                       or die "$THIS_FILE: $file: $IO::Compress::Gzip::GzipError";
         undef $_;

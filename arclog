@@ -2077,7 +2077,7 @@ sub open_write : method {
     }
     ($self->{"file"}, $self->{"FH"}) = ($file, $FH);
     print STDERR "  Attaching file with IO::Compress::Bzip2 ... " if $VERBOSE > 2;
-    $self->{"bz"} = IO::Compress::Bzip2->new($FH)
+    $self->{"bz"} = IO::Compress::Bzip2->new($FH, BlockSize100K => 9)
                                         or die "$THIS_FILE: $file: $IO::Compress::Bzip2::Bzip2Error";
     print STDERR "done\n" if $VERBOSE > 2;
     return;
@@ -2122,7 +2122,7 @@ sub open_append : method {
                                         or die "$THIS_FILE: $file: $IO::Uncompress::Bunzip2::Bunzip2Error";
         print STDERR "done\n" if $VERBOSE > 2;
         print STDERR "  Attaching file with IO::Compress::Bzip2 ... " if $VERBOSE > 2;
-        $bz = IO::Compress::Bzip2->new($FH)
+        $bz = IO::Compress::Bzip2->new($FH, BlockSize100K => 9)
                                         or die "$THIS_FILE: $file: $IO::Compress::Bzip2::Bzip2Error";
         print STDERR "done\n" if $VERBOSE > 2;
 
@@ -2139,7 +2139,7 @@ sub open_append : method {
     # A whole new file
     } else {
         print STDERR "  Attaching file with IO::Compress::Bzip2 ... " if $VERBOSE > 2;
-        $bz = IO::Compress::Bzip2->new($FH)
+        $bz = IO::Compress::Bzip2->new($FH, BlockSize100K => 9)
                                         or die "$THIS_FILE: $file: $IO::Compress::Bzip2::Bzip2Error";
         print STDERR "done\n" if $VERBOSE > 2;
     }
@@ -2181,7 +2181,7 @@ sub close : method {
 
         # Create empty compressed content
         print STDERR "  Applying empty compressed content ... " if $VERBOSE > 2;
-        $_ = IO::Compress::Bzip2->new($FH)
+        $_ = IO::Compress::Bzip2->new($FH, BlockSize100K => 9)
                                         or die "$THIS_FILE: $file: $IO::Compress::Bzip2::Bzip2Error";
         $_->close                       or die "$THIS_FILE: $file: $IO::Compress::Bzip2::Bzip2Error";
         undef $_;

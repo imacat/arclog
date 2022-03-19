@@ -234,12 +234,7 @@ sub read_file($) {
             open $FH, $file             or die this_file . ": $file: $!";
             $gz = IO::Uncompress::Gunzip->new($FH)
                                         or die this_file . ": $file: $IO::Uncompress::Gunzip::GunzipError";
-            while (1) {
-                ($gz->read($_, 10240) != -1)
-                                        or die this_file . ": $file: $IO::Uncompress::Gunzip::GunzipError";
-                $content .= $_;
-                last if length $_ < 10240;
-            }
+            $content = join "", <$gz>;
             $gz->close                  or die this_file . ": $file: $IO::Uncompress::Gunzip::GunzipError";
             return $content;
 
@@ -263,12 +258,7 @@ sub read_file($) {
             open $FH, $file             or die this_file . ": $file: $!";
             $bz = IO::Uncompress::Bunzip2->new($FH)
                                         or die this_file . ": $file: $IO::Uncompress::Bunzip2::Bunzip2Error";
-            while (1) {
-                ($bz->read($_, 10240) != -1)
-                                        or die this_file . ": $file: $IO::Uncompress::Bunzip2::Bunzip2Error";
-                $content .= $_;
-                last if length $_ < 10240;
-            }
+            $content = join "", <$bz>;
             $bz->close                  or die this_file . ": $file: $IO::Uncompress::Bunzip2::Bunzip2Error";
             return $content;
 
@@ -293,12 +283,7 @@ sub read_file($) {
 
             $xz = IO::Uncompress::UnXz->new($FH)
                                         or die this_file . ": $file: $IO::Uncompress::UnXz::UnXzError";
-            while (1) {
-                ($xz->read($_, 10240) != -1)
-                                        or die this_file . ": $file: $IO::Uncompress::UnXz::UnXzError";
-                $content .= $_;
-                last if length $_ < 10240;
-            }
+            $content = join "", <$xz>;
             $xz->close                  or die this_file . ": $file: $IO::Uncompress::UnXz::UnXzError";
             return $content;
 

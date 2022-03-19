@@ -1,6 +1,6 @@
 arclog change log
 
-2022-03-19
+2022-03-19	version 3.06
 	 1. Added support for the xz compression.
 	 2. Replaced Compress::Zlib with IO::Compress::Gzip and
 	    IO::Uncompress::Gunzip.

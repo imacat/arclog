@@ -375,7 +375,7 @@ sub write_file($$) {
         }
 
     # an xz compressed file
-    } elsif ($file =~ /\.xz/) {
+    } elsif ($file =~ /\.xz$/) {
         # IO::Compress::Xz
         if (eval { require IO::Compress::Xz; 1; }) {
             my $xz;
